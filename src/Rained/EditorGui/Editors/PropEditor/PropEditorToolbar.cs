@@ -64,6 +64,7 @@ partial class PropEditor : IEditorMode
     {
         var field = typeof(T).GetField(fieldName)!;
         var targetV = (int)field.GetValue(items[0])!;
+        var displayLabel = I18n.Asset(label) + "###" + label;
 
         bool isSame = true;
         for (int i = 1; i < items.Length; i++)
@@ -78,7 +79,7 @@ partial class PropEditor : IEditorMode
         if (isSame)
         {
             int v = (int) field.GetValue(items[0])!;
-            if (ImGui.DragInt(label, ref v, v_speed, v_min, v_max))
+            if (ImGui.DragInt(displayLabel, ref v, v_speed, v_min, v_max))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -87,7 +88,7 @@ partial class PropEditor : IEditorMode
         else
         {
             int v = 0;
-            if (ImGui.DragInt(label, ref v, v_speed, v_min, v_max, string.Empty))
+            if (ImGui.DragInt(displayLabel, ref v, v_speed, v_min, v_max, string.Empty))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -105,6 +106,7 @@ partial class PropEditor : IEditorMode
         var field = typeof(T).GetField(fieldName)!;
         var targetV = (int)field.GetValue(items[0])!;
         var style = ImGui.GetStyle();
+        var displayLabel = I18n.Asset(label) + "###" + label;
 
         bool isSame = true;
         for (int i = 1; i < items.Length; i++)
@@ -126,7 +128,7 @@ partial class PropEditor : IEditorMode
         if (isSame)
         {
             int v = (int) field.GetValue(items[0])!;
-            if (ImGui.SliderInt(depthOffsetInput ? "##"+label : label, ref v, v_min, v_max, format, flags))
+            if (ImGui.SliderInt(depthOffsetInput ? "##"+label : displayLabel, ref v, v_min, v_max, format, flags))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -135,7 +137,7 @@ partial class PropEditor : IEditorMode
         else
         {
             int v = int.MinValue;
-            if (ImGui.SliderInt(depthOffsetInput ? "##"+label : label, ref v, v_min, v_max, string.Empty, flags))
+            if (ImGui.SliderInt(depthOffsetInput ? "##"+label : displayLabel, ref v, v_min, v_max, string.Empty, flags))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -179,7 +181,7 @@ partial class PropEditor : IEditorMode
             ImGui.PopButtonRepeat();
 
             ImGui.SameLine();
-            ImGui.TextUnformatted(label);
+            ImGui.TextUnformatted(I18n.Asset(label));
 
             ImGui.PopStyleVar();
             ImGui.PopItemWidth();
@@ -190,6 +192,7 @@ partial class PropEditor : IEditorMode
     {
         var field = typeof(T).GetField(fieldName)!;
         var targetV = (float)field.GetValue(items[0])!;
+        var displayLabel = I18n.Asset(label) + "###" + label;
 
         bool isSame = true;
         for (int i = 1; i < items.Length; i++)
@@ -211,7 +214,7 @@ partial class PropEditor : IEditorMode
         if (isSame)
         {
             float v = (float) field.GetValue(items[0])!;
-            if (ImGui.SliderFloat(label, ref v, v_min, v_max, format, flags))
+            if (ImGui.SliderFloat(displayLabel, ref v, v_min, v_max, format, flags))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -220,7 +223,7 @@ partial class PropEditor : IEditorMode
         else
         {
             float v = float.NegativeInfinity;
-            if (ImGui.SliderFloat(label, ref v, v_min, v_max, string.Empty, flags))
+            if (ImGui.SliderFloat(displayLabel, ref v, v_min, v_max, string.Empty, flags))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -248,15 +251,15 @@ partial class PropEditor : IEditorMode
             }
         }
 
-        var previewText = isSame ? enumNames[(int) Convert.ChangeType(targetV, targetV.GetTypeCode())] : "";
+        var previewText = isSame ? I18n.Asset(enumNames[(int) Convert.ChangeType(targetV, targetV.GetTypeCode())]) : "";
 
-        if (ImGui.BeginCombo(label, previewText))
+        if (ImGui.BeginCombo(I18n.Asset(label) + "###" + label, previewText))
         {
             for (int i = 0; i < enumNames.Length; i++)
             {
                 E e = (E) Convert.ChangeType(i, targetV.GetTypeCode());
                 bool sel = isSame && e.Equals(targetV);
-                if (ImGui.Selectable(enumNames[i], sel))
+                if (ImGui.Selectable(I18n.Asset(enumNames[i]) + "###" + enumNames[i], sel))
                 {
                     foreach (var item in items)
                         field.SetValue(item, e);
@@ -291,7 +294,8 @@ partial class PropEditor : IEditorMode
 
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, ImGui.GetStyle().ItemInnerSpacing);
 
-        if (ImGuiExt.ButtonSwitch(label, values, ref selected))
+        var translatedValues = values.ToArray().Select(I18n.Asset).ToArray();
+        if (ImGuiExt.ButtonSwitch(I18n.Asset(label) + "###" + label, translatedValues, ref selected))
         {
             E e = (E) Convert.ChangeType(selected, ((E)targetV).GetTypeCode());
             foreach (var item in items)
@@ -301,7 +305,7 @@ partial class PropEditor : IEditorMode
         ImGui.SameLine();
         ImGui.AlignTextToFramePadding();
         ImGui.PopStyleVar();
-        ImGui.TextUnformatted(label);
+        ImGui.TextUnformatted(I18n.Asset(label));
     }
 
     private void MultiselectListInput<T, L>(T[] items, string label, string fieldName, List<L> list)
@@ -319,15 +323,15 @@ partial class PropEditor : IEditorMode
             }
         }
 
-        var previewText = isSame ? list[targetV]!.ToString() : "";
+        var previewText = isSame ? I18n.Asset(list[targetV]!.ToString()!) : "";
 
-        if (ImGui.BeginCombo(label, previewText))
+        if (ImGui.BeginCombo(I18n.Asset(label) + "###" + label, previewText))
         {
             for (int i = 0; i < list.Count; i++)
             {
-                var txt = list[i]!.ToString();
+                var txt = list[i]!.ToString()!;
                 bool sel = isSame && targetV == i;
-                if (ImGui.Selectable(txt, sel))
+                if (ImGui.Selectable(I18n.Asset(txt) + "###" + txt, sel))
                 {
                     foreach (var prop in items)
                         field.SetValue(prop, i);
@@ -361,7 +365,7 @@ partial class PropEditor : IEditorMode
         if (isSame)
         {
             bool v = (bool)field.GetValue(items[0])!;
-            if (ImGui.Checkbox(label, ref v))
+            if (ImGui.Checkbox(I18n.Asset(label) + "###" + label, ref v))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -373,7 +377,7 @@ partial class PropEditor : IEditorMode
             
             // ImGui::PushItemFlag(ImGuiItemFlags_MixedValue, true)
             ImGuiInternal.igPushItemFlag(64, 1);
-            if (ImGui.Checkbox(label, ref v))
+            if (ImGui.Checkbox(I18n.Asset(label) + "###" + label, ref v))
             {
                 foreach (var prop in items)
                     field.SetValue(prop, v);
@@ -460,13 +464,13 @@ partial class PropEditor : IEditorMode
             snappingMode = (PropSnapMode) (((int)snappingMode + 1) % 4);
         }
 
-        if (ImGui.Begin("Props", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Props") + "###Props", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             // work layer
             {
                 int workLayerV = window.WorkLayer + 1;
                 ImGui.SetNextItemWidth(ImGui.GetTextLineHeightWithSpacing() * 4f);
-                ImGui.InputInt("View Layer", ref workLayerV);
+                ImGui.InputInt(I18n.T("View Layer") + "###View Layer", ref workLayerV);
                 window.WorkLayer = Math.Clamp(workLayerV, 1, 3) - 1;
             }
 
@@ -474,7 +478,7 @@ partial class PropEditor : IEditorMode
             ImGui.SetNextItemWidth(ImGui.GetTextLineHeightWithSpacing() * 4f);
             {
                 int snapModeInt = (int) snappingMode;
-                if (ImGui.Combo("Snap", ref snapModeInt, "Off\00.25x\00.5x\01x\0"))
+                if (ImGui.Combo(I18n.T("Snap") + "###Snap", ref snapModeInt, I18n.Combo("Off", "0.25x", "0.5x", "1x")))
                     snappingMode = (PropSnapMode) snapModeInt;
             }
             
@@ -495,7 +499,7 @@ partial class PropEditor : IEditorMode
                     tilesFlags = ImGuiTabItemFlags.SetSelected;
 
                 // Props tab
-                if (ImGuiExt.BeginTabItem("Props", propsFlags))
+                if (ImGuiExt.BeginTabItem(I18n.T("Props") + "###Props", propsFlags))
                 {
                     if (selectionMode != SelectionMode.Props)
                     {
@@ -510,7 +514,7 @@ partial class PropEditor : IEditorMode
                 }
 
                 // Tiles as props tab
-                if (ImGuiExt.BeginTabItem("Tiles", tilesFlags))
+                if (ImGuiExt.BeginTabItem(I18n.T("Tiles") + "###Tiles", tilesFlags))
                 {
                     // if tab changed, reset selected group back to 0
                     if (selectionMode != SelectionMode.Tiles)
@@ -612,7 +616,7 @@ partial class PropEditor : IEditorMode
         var btnSize = new Vector2(ImGuiExt.ButtonGroup.CalcItemWidth(ImGui.GetContentRegionAvail().X, 4), 0);
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, ImGui.GetStyle().ItemInnerSpacing);
 
-        if (ImGui.Button("Reset", btnSize))
+        if (ImGui.Button(I18n.T("Reset"), btnSize))
         {
             changeRecorder.BeginTransform();
                 foreach (var prop in selectedProps)
@@ -621,7 +625,7 @@ partial class PropEditor : IEditorMode
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Flip X", btnSize))
+        if (ImGui.Button(I18n.T("Flip X"), btnSize))
         {
             changeRecorder.BeginTransform();
                 foreach (var prop in selectedProps)
@@ -630,7 +634,7 @@ partial class PropEditor : IEditorMode
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Flip Y", btnSize))
+        if (ImGui.Button(I18n.T("Flip Y"), btnSize))
         {
             changeRecorder.BeginTransform();
                 foreach (var prop in selectedProps)
@@ -639,7 +643,7 @@ partial class PropEditor : IEditorMode
         }
 
         ImGui.SameLine();
-        if (ImGui.Button("Depth Move", btnSize))
+        if (ImGui.Button(I18n.T("Depth Move"), btnSize))
         {
             ImGui.OpenPopup("ZTranslate");
             zTranslateValue = 0;
@@ -657,7 +661,7 @@ partial class PropEditor : IEditorMode
             ImGui.PopItemWidth();
 
             ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, Vector2.Zero);
-            ImGui.Checkbox("Wrap around", ref zTranslateWrap);
+            ImGui.Checkbox(I18n.T("Wrap around"), ref zTranslateWrap);
             ImGui.PopStyleVar();
 
             if (StandardPopupButtons.Show(PopupButtonList.OKCancel, out var btn))
@@ -858,7 +862,7 @@ partial class PropEditor : IEditorMode
                 // color Zero-G Tube white
                 if (prop.PropInit.PropFlags.HasFlag(PropFlags.Colorize))
                 {
-                    if (ImGui.Checkbox("Apply Color", ref prop.ApplyColor))
+                    if (ImGui.Checkbox(I18n.T("Apply Color"), ref prop.ApplyColor))
                         changeRecorder.PushSettingsChanges();
                 }
             }
@@ -866,7 +870,7 @@ partial class PropEditor : IEditorMode
             // rope simulation controls
             if (affineProps)
             {
-                if (ImGui.Button("Reset Simulation") || KeyShortcuts.Activated(KeyShortcut.ResetSimulation))
+                if (ImGui.Button(I18n.T("Reset Simulation")) || KeyShortcuts.Activated(KeyShortcut.ResetSimulation))
                 {
                     changeRecorder.BeginTransform();
 
@@ -879,7 +883,7 @@ partial class PropEditor : IEditorMode
                 var simSpeed = 0f;
 
                 ImGui.SameLine();
-                ImGui.Button("Simulate");
+                ImGui.Button(I18n.T("Simulate"));
 
                 if ((ImGui.IsItemActive() || KeyShortcuts.Active(KeyShortcut.RopeSimulation)) && transformMode is null)
                 {
@@ -887,7 +891,7 @@ partial class PropEditor : IEditorMode
                 }
 
                 ImGui.SameLine();
-                ImGui.Button("Fast");
+                ImGui.Button(I18n.T("Fast"));
                 if ((ImGui.IsItemActive() || KeyShortcuts.Active(KeyShortcut.RopeSimulationFast)) && transformMode is null)
                 {
                     simSpeed = RainEd.Instance.Preferences.FastSimulationSpeed;
@@ -976,7 +980,7 @@ partial class PropEditor : IEditorMode
                 // apply color
                 if (prop.PropInit.PropFlags.HasFlag(PropFlags.Colorize))
                 {
-                    if (ImGui.Checkbox("Apply Color", ref prop.ApplyColor))
+                    if (ImGui.Checkbox(I18n.T("Apply Color"), ref prop.ApplyColor))
                         changeRecorder.PushSettingsChanges();
                 }
 
@@ -989,7 +993,7 @@ partial class PropEditor : IEditorMode
             // notes
         }
 
-        ImGui.SeparatorText("Notes");
+        ImGui.SeparatorText(I18n.T("Notes"));
 
         if (longProps && !affineProps)
         {
@@ -1009,7 +1013,7 @@ partial class PropEditor : IEditorMode
             }
 
             if (prop.PropInit.PropFlags.HasFlag(PropFlags.Tile))
-                ImGui.BulletText("Tile as Prop");
+                ImGui.BulletText(I18n.T("Tile as Prop"));
 
             if (prop.PropInit.PropFlags.HasFlag(PropFlags.Colorize))
             {
@@ -1044,7 +1048,7 @@ partial class PropEditor : IEditorMode
 
     private void OptionsToolbar()
     {
-        if (ImGui.Begin("Prop Options", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Prop Options") + "###Prop Options", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             // prop transformation mode
             if (selectedObjects.Count > 0)
@@ -1062,7 +1066,7 @@ partial class PropEditor : IEditorMode
                 }
                 else
                 {
-                    ImGui.Text("Selected multiple props");
+                    ImGui.Text(I18n.T("Selected multiple props"));
                 }
 
                 Prop[] selectedProps = [..SelectedProps];
@@ -1073,7 +1077,7 @@ partial class PropEditor : IEditorMode
             }
             else
             {
-                ImGui.Text("No props selected");
+                ImGui.Text(I18n.T("No props selected"));
             }
 
         } ImGui.End();

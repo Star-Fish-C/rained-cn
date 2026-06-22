@@ -179,12 +179,12 @@ static class EditorWindow
         {
             var fileActive = RainEd.Instance.CurrentTab is not null;
 
-            if (ImGui.BeginMenu("File"))
+            if (ImGui.BeginMenu(I18n.T("File")))
             {
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.New, "New...");
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.Open, "Open...");
 
-                if (ImGui.BeginMenu("Open Recent"))
+                if (ImGui.BeginMenu(I18n.T("Open Recent")))
                 {
                     RecentLevelsList(10);
                     ImGui.EndMenu();
@@ -200,14 +200,14 @@ static class EditorWindow
 
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.Render, "Render...", enabled: fileActive);
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.ExportGeometry, "Export Geometry...", enabled: fileActive);
-                if (ImGui.MenuItem("Mass Render..."))
+                if (ImGui.MenuItem(I18n.T("Mass Render...")))
                 {
                     MassRenderWindow.OpenWindow();
                 }
 
                 ImGui.Separator();
 
-                if (ImGui.MenuItem("Preferences..."))
+                if (ImGui.MenuItem(I18n.T("Preferences...")))
                 {
                     PreferencesWindow.OpenWindow();
                 }
@@ -215,7 +215,7 @@ static class EditorWindow
                 LuaScripting.Modules.GuiModule.MenuHook("File", true);
 
                 ImGui.Separator();
-                if (ImGui.MenuItem("Quit", "Alt+F4"))
+                if (ImGui.MenuItem(I18n.T("Quit"), "Alt+F4"))
                 {
                     PromptUnsavedChanges((bool ok) =>
                     {
@@ -226,7 +226,7 @@ static class EditorWindow
                 ImGui.EndMenu();
             }
 
-            if (ImGui.BeginMenu("Edit"))
+            if (ImGui.BeginMenu(I18n.T("Edit")))
             {
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.Undo, "Undo", enabled: fileActive);
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.Redo, "Redo", enabled: fileActive);
@@ -236,7 +236,7 @@ static class EditorWindow
                 //ImGuiMenuItemShortcut(ShortcutID.Paste, "Paste");
                 ImGui.Separator();
 
-                if (ImGui.MenuItem("Resize Level...", enabled: fileActive))
+                if (ImGui.MenuItem(I18n.T("Resize Level..."), enabled: fileActive))
                 {
                     levelResizeWin = new LevelResizeWindow();
                 }
@@ -246,12 +246,12 @@ static class EditorWindow
                 {
                     ImGui.Separator();
 
-                    if (ImGui.BeginMenu("Commands"))
+                    if (ImGui.BeginMenu(I18n.T("Commands")))
                     {
                         foreach (RainEd.Command cmd in customCommands)
                         {
                             bool enabled = RainEd.Instance.CurrentTab?.Level is not null || !cmd.parameters.RequiresLevel;
-                            if (ImGui.MenuItem(cmd.Name, enabled))
+                            if (ImGui.MenuItem(I18n.T(cmd.Name), enabled))
                             {
                                 cmd.Callback(cmd.ID);
                             }
@@ -272,13 +272,13 @@ static class EditorWindow
                 ImGui.EndMenu();
             }
 
-            if (ImGui.BeginMenu("View"))
+            if (ImGui.BeginMenu(I18n.T("View")))
             {
                 var prefs = RainEd.Instance.Preferences;
 
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.ViewZoomIn, "Zoom In", enabled: fileActive);
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.ViewZoomOut, "Zoom Out", enabled: fileActive);
-                if (ImGui.MenuItem("Reset View", enabled: fileActive))
+                if (ImGui.MenuItem(I18n.T("Reset View"), enabled: fileActive))
                 {
                     RainEd.Instance.LevelView.ResetView();
                 }
@@ -297,7 +297,7 @@ static class EditorWindow
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.ToggleViewCameras, "Camera Borders", prefs.ViewCameras);
                 KeyShortcuts.ImGuiMenuItem(KeyShortcut.ToggleViewGraphics, "Tile Graphics", prefs.ViewPreviews);
 
-                if (ImGui.BeginMenu("Node Indices"))
+                if (ImGui.BeginMenu(I18n.T("Node Indices")))
                 {
                     KeyShortcuts.ImGuiMenuItem(KeyShortcut.ToggleViewNodeIndices, "Show", prefs.ViewNodeIndices);
                     ImGui.Separator();
@@ -316,13 +316,13 @@ static class EditorWindow
                     for (int i = 0; i < flagNames.Length; i++)
                     {
                         ref var flag = ref prefs.NodeViewFilter.Flags[i];
-                        ImGui.MenuItem(flagNames[i], null, ref flag);
+                        ImGui.MenuItem(I18n.T(flagNames[i]), null, ref flag);
                     }
 
                     ImGui.EndMenu();
                 }
 
-                if (ImGui.MenuItem("Obscured Beams", null, prefs.ViewObscuredBeams))
+                if (ImGui.MenuItem(I18n.T("Obscured Beams"), null, prefs.ViewObscuredBeams))
                 {
                     prefs.ViewObscuredBeams = !prefs.ViewObscuredBeams;
 
@@ -334,47 +334,47 @@ static class EditorWindow
                     }
                 }
 
-                if (ImGui.MenuItem("Tile Heads", null, prefs.ViewTileHeads))
+                if (ImGui.MenuItem(I18n.T("Tile Heads"), null, prefs.ViewTileHeads))
                 {
                     prefs.ViewTileHeads = !prefs.ViewTileHeads;
                 }
 
                 ImGui.Separator();
 
-                if (ImGui.MenuItem("Keyboard Shortcuts", null, ShortcutsWindow.IsWindowOpen))
+                if (ImGui.MenuItem(I18n.T("Keyboard Shortcuts"), null, ShortcutsWindow.IsWindowOpen))
                 {
                     ShortcutsWindow.IsWindowOpen = !ShortcutsWindow.IsWindowOpen;
                 }
 
-                if (ImGui.MenuItem("Logs", null, LogsWindow.IsWindowOpen))
+                if (ImGui.MenuItem(I18n.T("Logs"), null, LogsWindow.IsWindowOpen))
                 {
                     LogsWindow.IsWindowOpen = !LogsWindow.IsWindowOpen;
                 }
 
-                if (ImGui.MenuItem("Palettes", null, PaletteWindow.IsWindowOpen))
+                if (ImGui.MenuItem(I18n.T("Palettes"), null, PaletteWindow.IsWindowOpen))
                 {
                     PaletteWindow.IsWindowOpen = !PaletteWindow.IsWindowOpen;
                 }
 
-                if (ImGui.BeginMenu("Tile Preview"))
+                if (ImGui.BeginMenu(I18n.T("Tile Preview")))
                 {
                     var viewGfx = prefs.ViewTileGraphicPreview;
                     var viewSpecs = prefs.ViewTileSpecPreview;
                     var specsTooltip = prefs.ViewTileSpecsOnTooltip;
 
-                    if (ImGui.MenuItem("Graphics", null, ref viewGfx))
+                    if (ImGui.MenuItem(I18n.T("Graphics"), null, ref viewGfx))
                         prefs.ViewTileGraphicPreview = viewGfx;
                     
-                    if (ImGui.MenuItem("Geometry", null, ref viewSpecs))
+                    if (ImGui.MenuItem(I18n.T("Geometry"), null, ref viewSpecs))
                         prefs.ViewTileSpecPreview = viewSpecs;
                     
-                    if (ImGui.MenuItem("Tooltip Geometry", null, ref specsTooltip))
+                    if (ImGui.MenuItem(I18n.T("Tooltip Geometry"), null, ref specsTooltip))
                         prefs.ViewTileSpecsOnTooltip = specsTooltip;
                     
                     ImGui.EndMenu();
                 }
 
-                if (ImGui.MenuItem("Home", !homeTab))
+                if (ImGui.MenuItem(I18n.T("Home"), !homeTab))
                 {
                     homeTab = true;
                     switchToHomeTab = true;
@@ -384,18 +384,18 @@ static class EditorWindow
 
                 ImGui.Separator();
 
-                if (ImGui.BeginMenu("Open Folder"))
+                if (ImGui.BeginMenu(I18n.T("Open Folder")))
                 {
-                    if (ImGui.MenuItem("Data..."))
+                    if (ImGui.MenuItem(I18n.T("Data...")))
                         RainEd.Instance.ShowPathInSystemBrowser(RainEd.Instance.AssetDataPath, false);
                     
-                    if (ImGui.MenuItem("Render..."))
+                    if (ImGui.MenuItem(I18n.T("Render...")))
                         RainEd.Instance.ShowPathInSystemBrowser(Path.Combine(RainEd.Instance.AssetDataPath, "Levels"), false);
 
-                    if (ImGui.MenuItem("Config..."))
+                    if (ImGui.MenuItem(I18n.T("Config...")))
                         RainEd.Instance.ShowPathInSystemBrowser(Boot.ConfigPath, false);
 
-                    if (ImGui.MenuItem("Scripts..."))
+                    if (ImGui.MenuItem(I18n.T("Scripts...")))
                         RainEd.Instance.ShowPathInSystemBrowser(Boot.ScriptsPath, false);
                     
                     ImGui.EndMenu();
@@ -404,9 +404,9 @@ static class EditorWindow
                 ImGui.EndMenu();
             }
 
-            if (ImGui.BeginMenu("Tools"))
+            if (ImGui.BeginMenu(I18n.T("Tools")))
             {
-                if (ImGui.MenuItem("Reload Scripts"))
+                if (ImGui.MenuItem(I18n.T("Reload Scripts")))
                 {
                     LuaScripting.LuaInterface.Unload();
 
@@ -420,7 +420,7 @@ static class EditorWindow
                     }
                 }
 
-                if (ImGui.MenuItem("Execute Script..."))
+                if (ImGui.MenuItem(I18n.T("Execute Script...")))
                 {
                     var startDir = Path.Combine(Boot.ScriptsPath);
                     fileBrowser = new FileBrowser(
@@ -437,7 +437,7 @@ static class EditorWindow
 
                 ImGui.Separator();
 
-                if (ImGui.MenuItem("Asset Manager"))
+                if (ImGui.MenuItem(I18n.T("Asset Manager")))
                 {
                     AssetManagerWindow.OpenWindow();
                 }
@@ -447,19 +447,19 @@ static class EditorWindow
                 ImGui.EndMenu();
             }
 
-            if (ImGui.BeginMenu("Help"))
+            if (ImGui.BeginMenu(I18n.T("Help")))
                 {
-                    if (ImGui.MenuItem("Readme..."))
+                    if (ImGui.MenuItem(I18n.T("Readme...")))
                     {
                         Platform.OpenURL(Path.Combine(Boot.AppDataPath, "README.txt"));
                     }
 
-                    if (ImGui.MenuItem("Manual..."))
+                    if (ImGui.MenuItem(I18n.T("Manual...")))
                     {
                         OpenManual();
                     }
 
-                    if (ImGui.MenuItem("About..."))
+                    if (ImGui.MenuItem(I18n.T("About...")))
                     {
                         AboutWindow.IsWindowOpen = true;
                     }
@@ -756,7 +756,7 @@ static class EditorWindow
                         switchToHomeTab = false;
                     }
                     
-                    if (ImGui.BeginTabItem("Home", ref homeTab, tabFlags))
+                    if (ImGui.BeginTabItem(I18n.T("Home") + "###Home", ref homeTab, tabFlags))
                     {
                         if (!tabChanged)
                         {
@@ -887,7 +887,7 @@ static class EditorWindow
             else
                 ImGui.PushStyleColor(ImGuiCol.WindowBg, windowBg);
             
-            if (ImGui.Begin("Notification", windowFlags))
+            if (ImGui.Begin(I18n.T("Notification") + "###Notification", windowFlags))
                 ImGui.TextUnformatted(notification);
             ImGui.End();
 
@@ -907,27 +907,27 @@ static class EditorWindow
         if (promptUnsavedChanges)
         {
             promptUnsavedChanges = false;
-            ImGui.OpenPopup("Unsaved Changes");
+            ImGui.OpenPopup("UnsavedChanges");
 
             // center popup 
             ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
         }
 
         bool unused = true;
-        if (ImGui.BeginPopupModal("Unsaved Changes", ref unused, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGui.BeginPopupModal(I18n.T("Unsaved Changes") + "###UnsavedChanges", ref unused, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
             if (promptUnsavedChangesCancelable)
             {
-                ImGui.Text("Do you want to save your changes before proceeding?");
+                ImGui.Text(I18n.T("Do you want to save your changes before proceeding?"));
             }
             else
             {
-                ImGui.Text("You must save before proceeding.\nDo you want to save now?");
+                ImGui.Text(I18n.T("You must save before proceeding.\nDo you want to save now?"));
             }
 
             ImGui.Separator();
 
-            if (ImGui.Button("Yes", StandardPopupButtons.ButtonSize) || ImGui.IsKeyPressed(ImGuiKey.Enter) || ImGui.IsKeyPressed(ImGuiKey.Space))
+            if (ImGui.Button(I18n.T("Yes"), StandardPopupButtons.ButtonSize) || ImGui.IsKeyPressed(ImGuiKey.Enter) || ImGui.IsKeyPressed(ImGuiKey.Space))
             {
                 ImGui.CloseCurrentPopup();
 
@@ -942,7 +942,7 @@ static class EditorWindow
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("No", StandardPopupButtons.ButtonSize) || (!promptUnsavedChangesCancelable && ImGui.IsKeyPressed(ImGuiKey.Escape)))
+            if (ImGui.Button(I18n.T("No"), StandardPopupButtons.ButtonSize) || (!promptUnsavedChangesCancelable && ImGui.IsKeyPressed(ImGuiKey.Escape)))
             {
                 ImGui.CloseCurrentPopup();
 
@@ -963,7 +963,7 @@ static class EditorWindow
             if (promptUnsavedChangesCancelable)
             {
                 ImGui.SameLine();
-                if (ImGui.Button("Cancel", StandardPopupButtons.ButtonSize) || ImGui.IsKeyPressed(ImGuiKey.Escape))
+                if (ImGui.Button(I18n.T("Cancel"), StandardPopupButtons.ButtonSize) || ImGui.IsKeyPressed(ImGuiKey.Escape))
                 {
                     ImGui.CloseCurrentPopup();
 
@@ -1059,17 +1059,17 @@ static class EditorWindow
         ImGui.SetCursorPosY(RainedLogo.Height - 100f);
         var btnSize = new Vector2(-0.00001f, 0f);
 
-        if (ImGui.Button("New Level...", btnSize))
+        if (ImGui.Button(I18n.T("New Level..."), btnSize))
             NewLevelWindow.OpenWindow();
         
-        if (ImGui.Button("Open Level...", btnSize))
+        if (ImGui.Button(I18n.T("Open Level..."), btnSize))
             OpenLevelPrompt();
         
-        if (ImGui.Button("Manual...", btnSize))
+        if (ImGui.Button(I18n.T("Manual..."), btnSize))
             OpenManual();
 
         // recent levels list
-        ImGui.Text("Recent Levels");
+        ImGui.Text(I18n.T("Recent Levels"));
         var listBoxSize = ImGui.GetContentRegionAvail();
         // if new version was found, make space for the text
         if (newVersion)
@@ -1084,7 +1084,7 @@ static class EditorWindow
         // show new version
         if (newVersion)
         {
-            ImGui.Text("New version available!");
+            ImGui.Text(I18n.T("New version available!"));
             ImGui.SameLine();
             ImGuiExt.LinkText(RainEd.Instance.LatestVersionInfo!.VersionName, RainEd.Instance.LatestVersionInfo.GitHubReleaseUrl);
         }
@@ -1098,7 +1098,7 @@ static class EditorWindow
 
         if (recentFiles.Count == 0)
         {
-            ImGui.MenuItem("(no recent files)", false);
+            ImGui.MenuItem(I18n.T("(no recent files)"), false);
         }
         else
         {
@@ -1118,7 +1118,7 @@ static class EditorWindow
                     }
                     else
                     {
-                        ShowNotification("File could not be accessed");
+                        ShowNotification(I18n.T("File could not be accessed"));
                         recentFiles.RemoveAt(i);
                     }
                 }
@@ -1141,7 +1141,7 @@ static class EditorWindow
         }
         else
         {
-            ShowNotification("Could not open documentation.");
+            ShowNotification(I18n.T("Could not open documentation."));
         }
     }
 }

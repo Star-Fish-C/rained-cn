@@ -262,9 +262,9 @@ class AutotileCatalog
         }
 
         ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
-        if (ImGuiExt.BeginPopupModal("Error", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGuiExt.BeginPopupModal(I18n.T("Error") + "###Error", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
-            ImGui.TextUnformatted(createError);
+            ImGui.TextUnformatted(I18n.T(createError));
 
             ImGui.Separator();
             if (StandardPopupButtons.Show(PopupButtonList.OK, out _))
@@ -306,11 +306,11 @@ class AutotileCatalog
     {
         bool p_open = true;
         ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
-        if (ImGui.BeginPopupModal("Create Autotile", ref p_open, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGui.BeginPopupModal(I18n.T("Create Autotile") + "###Create Autotile", ref p_open, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
             ImGui.PushItemWidth(ImGui.GetTextLineHeight() * 12.0f);
-            ImGui.InputText("Name", ref createName, 128);
-            ImGui.InputText("Category", ref createCategory, 128);
+            ImGui.InputText(I18n.T("Name") + "###Name", ref createName, 128);
+            ImGui.InputText(I18n.T("Category") + "###Category", ref createCategory, 128);
             ImGui.PopItemWidth();
 
             ImGui.Separator();
@@ -353,11 +353,11 @@ class AutotileCatalog
     {
         bool p_open = true;
         ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
-        if (ImGui.BeginPopupModal("Rename Autotile", ref p_open, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGui.BeginPopupModal(I18n.T("Rename Autotile") + "###Rename Autotile", ref p_open, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
             ImGui.PushItemWidth(ImGui.GetTextLineHeight() * 12.0f);
-            ImGui.InputText("Name", ref createName, 128);
-            ImGui.InputText("Category", ref createCategory, 128);
+            ImGui.InputText(I18n.T("Name") + "###Name", ref createName, 128);
+            ImGui.InputText(I18n.T("Category") + "###Category", ref createCategory, 128);
             ImGui.PopItemWidth();
 
             ImGui.Separator();

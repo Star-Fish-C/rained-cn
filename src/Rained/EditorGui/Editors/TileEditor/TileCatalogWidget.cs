@@ -42,7 +42,11 @@ class TileCatalogWidget(ITileSelectionState selectionState) : TileEditorCatalog
             for (int j = 0; j < tileDb.Categories[i].Tiles.Count; j++)
             {
                 // this tile passes the search, so add this group to the search results
-                if (tileDb.Categories[i].Tiles[j].Name.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase))
+                var tileName = tileDb.Categories[i].Tiles[j].Name;
+                if (
+                    tileName.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase) ||
+                    I18n.Asset(tileName).Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase)
+                )
                 {
                     tileSearchResults.Add(i);
                     break;
@@ -59,7 +63,7 @@ class TileCatalogWidget(ITileSelectionState selectionState) : TileEditorCatalog
         {
             var group = tileDb.Categories[i];
 
-            if (ColoredSelectable(group.Name, group.Color, state.SelectedTileGroup == i) || tileSearchResults.Count == 1)
+            if (ColoredSelectable(I18n.Asset(group.Name) + "###" + group.Name, group.Color, state.SelectedTileGroup == i) || tileSearchResults.Count == 1)
             {
                 state.SelectedTileGroup = i;
                 EulaUpdate.TileEditorGroupChange();
@@ -78,12 +82,16 @@ class TileCatalogWidget(ITileSelectionState selectionState) : TileEditorCatalog
             var tile = tileList[i];
 
             // don't show this prop if it doesn't pass search test
-            if (!tile.Name.Contains(SearchQuery, StringComparison.CurrentCultureIgnoreCase))
+            var displayName = I18n.Asset(tile.Name);
+            if (
+                !tile.Name.Contains(SearchQuery, StringComparison.CurrentCultureIgnoreCase) &&
+                !displayName.Contains(SearchQuery, StringComparison.CurrentCultureIgnoreCase)
+            )
                 continue;
                 
             if (!EulaUpdate.TileEditorItemRenderHook()) continue;
             
-            if (ImGui.Selectable(tile.Name, tile == state.SelectedTile))
+            if (ImGui.Selectable(displayName + "###" + tile.Name, tile == state.SelectedTile))
             {
                 state.SelectTile(tile);
             }

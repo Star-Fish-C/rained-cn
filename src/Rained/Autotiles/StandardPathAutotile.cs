@@ -95,10 +95,10 @@ class StandardPathAutotile : Autotile, ITileSelectionState
         TileButton(ref TileTable.Vertical, "Vertical", TileType.Vertical);
         TileButton(ref TileTable.Horizontal, "Horizontal", TileType.Horizontal);
         
-        if (ImGui.Checkbox("Allow Junctions", ref TileTable.AllowJunctions))
+        if (ImGui.Checkbox(I18n.T("Allow Junctions"), ref TileTable.AllowJunctions))
             CheckTiles();
         
-        if (ImGui.Checkbox("Place Caps", ref TileTable.PlaceCaps))
+        if (ImGui.Checkbox(I18n.T("Place Caps"), ref TileTable.PlaceCaps))
             CheckTiles();
 
         if (TileTable.AllowJunctions)
@@ -144,8 +144,8 @@ class StandardPathAutotile : Autotile, ITileSelectionState
 
         ImGui.PopItemWidth();
 
-        ImGui.SeparatorText("Options");
-        if (ImGui.Button("Delete"))
+        ImGui.SeparatorText(I18n.T("Options"));
+        if (ImGui.Button(I18n.T("Delete")))
         {
             ImGui.OpenPopup("Delete?");
         }
@@ -153,9 +153,9 @@ class StandardPathAutotile : Autotile, ITileSelectionState
 
         // show deletion confirmation prompt
         ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
-        if (ImGuiExt.BeginPopupModal("Delete?", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGuiExt.BeginPopupModal(I18n.T("Delete?") + "###Delete?", ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
-            ImGui.TextUnformatted($"Are you sure you want to delete '{Name}'?");
+            ImGui.TextUnformatted(string.Format(I18n.T("Are you sure you want to delete '{0}'?"), Name));
             
             ImGui.Separator();
             if (StandardPopupButtons.Show(PopupButtonList.YesNo, out int btn))
@@ -171,7 +171,7 @@ class StandardPathAutotile : Autotile, ITileSelectionState
             ImGui.EndPopup();
         }
 
-        if (ImGui.Button("Rename"))
+        if (ImGui.Button(I18n.T("Rename")))
         {
             RainEd.Instance.Autotiles.OpenRenamePopup(this);
         }
@@ -205,7 +205,7 @@ class StandardPathAutotile : Autotile, ITileSelectionState
         }
 
         ImGui.SameLine();
-        ImGui.TextUnformatted(label);
+        ImGui.TextUnformatted(I18n.T(label));
 
         //ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
         

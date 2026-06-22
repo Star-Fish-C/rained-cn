@@ -5,7 +5,7 @@ namespace Rained.EditorGui.Editors;
 
 class EnvironmentEditor : IEditorMode
 {
-    public string Name { get => "Environment"; }
+    public string Name { get => I18n.T("Environment"); }
     public bool SupportsCellSelection => false;
     
     private readonly LevelWindow window;
@@ -48,24 +48,24 @@ class EnvironmentEditor : IEditorMode
     {
         var level = RainEd.Instance.Level;
 
-        if (ImGui.Begin("Environment", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Environment") + "###Environment", ImGuiWindowFlags.NoFocusOnAppearing))
         {
-            ImGui.Text("Tile Random Seed");
+            ImGui.Text(I18n.T("Tile Random Seed"));
             ImGui.SetNextItemWidth(-0.001f);
 
             ImGui.SliderInt("##seed", ref level.TileSeed, 0, 400, "%i", ImGuiSliderFlags.AlwaysClamp);
             RecordItemChanges();
 
-            ImGui.Checkbox("Enclosed Room", ref level.DefaultMedium);
+            ImGui.Checkbox(I18n.T("Enclosed Room"), ref level.DefaultMedium);
             RecordItemChanges();
 
-            ImGui.Checkbox("Sunlight", ref level.HasSunlight);
+            ImGui.Checkbox(I18n.T("Sunlight"), ref level.HasSunlight);
             RecordItemChanges();
 
-            ImGui.Checkbox("Water", ref level.HasWater);
+            ImGui.Checkbox(I18n.T("Water"), ref level.HasWater);
             RecordItemChanges();
 
-            ImGui.Checkbox("Is Water In Front", ref level.IsWaterInFront);
+            ImGui.Checkbox(I18n.T("Is Water In Front"), ref level.IsWaterInFront);
             RecordItemChanges();
         } ImGui.End();
     }

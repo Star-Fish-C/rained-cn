@@ -476,6 +476,7 @@ class UserPreferences
     public string Theme { get; set; }
     public string Font { get; set; }
     public int FontSize { get; set; } = 13;
+    public string Language { get; set; } = I18n.English;
     public float ContentScale { get; set; }
     public bool ImGuiMultiViewport { get; set; }
     public bool Vsync { get; set; } = true;
@@ -563,8 +564,13 @@ class UserPreferences
         AutotileMouseMode = AutotileMouseModeOptions.Hold;
         OptimizedTilePreviews = true;
 
+        Language = Boot.UserCulture.TwoLetterISOLanguageName == "zh"
+            ? I18n.ChineseSimplified
+            : I18n.English;
         ContentScale = Boot.Window is null ? 1.0f : Boot.WindowScale;
-        Font = (ContentScale == 1.0f) ? "ProggyClean" : "ProggyVector-Regular";
+        Font = Language == I18n.ChineseSimplified
+            ? "Microsoft YaHei"
+            : (ContentScale == 1.0f) ? "ProggyClean" : "ProggyVector-Regular";
         Theme = "Dark";
         if (Boot.Window is not null)
         {
@@ -628,13 +634,24 @@ class UserPreferences
 
         try
         {
-            return JsonSerializer.Deserialize<UserPreferences>(jsonString, jsonSerializeOptions)
+            var prefs = JsonSerializer.Deserialize<UserPreferences>(jsonString, jsonSerializeOptions)
                 ?? throw new NullReferenceException("JsonSerializer.Deserialize returned null");
+            prefs.NormalizeLanguageFont();
+            return prefs;
         }
         catch (Exception e)
         {
             throw new Exception($"Could not parse {filePath}: {e.Message}");
         }
+    }
+
+    private void NormalizeLanguageFont()
+    {
+        if (Language == I18n.English)
+            return;
+
+        if (Font is "ProggyClean" or "ProggyVector-Regular" or "FiraCode-Regular" or "FiraCode-Light")
+            Font = "Microsoft YaHei";
     }
 
     public void LoadKeyboardShortcuts()

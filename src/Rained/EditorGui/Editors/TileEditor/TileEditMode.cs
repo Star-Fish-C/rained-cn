@@ -324,7 +324,7 @@ class TileEditMode : TileEditorMode, ITileSelectionState
                         _ => "Unknown tile placement error"
                     };
 
-                    EditorWindow.ShowNotification(errStr);
+                    EditorWindow.ShowNotification(I18n.T(errStr));
                 }
 
                 placeTilesJustStarted = false;

@@ -30,25 +30,25 @@ partial class TileEditor : IEditorMode
         var matDb = RainEd.Instance.MaterialDatabase;
         var prefs = RainEd.Instance.Preferences;
 
-        if (ImGui.Begin("Tile Selector", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Tile Selector") + "###Tile Selector", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             // work layer
             {
                 int workLayerV = window.WorkLayer + 1;
                 ImGui.SetNextItemWidth(ImGui.GetTextLineHeightWithSpacing() * 4f);
-                ImGui.InputInt("Work Layer", ref workLayerV);
+                ImGui.InputInt(I18n.T("Work Layer") + "###Work Layer", ref workLayerV);
                 window.WorkLayer = Math.Clamp(workLayerV, 1, 3) - 1;
             }
 
             // default material button (or press E)
             int defaultMat = RainEd.Instance.Level.DefaultMaterial;
-            ImGui.TextUnformatted($"Default Material: {matDb.GetMaterial(defaultMat).Name}");
+            ImGui.TextUnformatted(string.Format(I18n.T("Default Material: {0}"), I18n.Asset(matDb.GetMaterial(defaultMat).Name)));
 
             var matEdit = editModes[currentMode] as MaterialEditMode;
             if (matEdit is null)
                 ImGui.BeginDisabled();
             
-            if ((ImGui.Button("Set Selected Material as Default") || KeyShortcuts.Activated(KeyShortcut.SetMaterial)) && matEdit is not null)
+            if ((ImGui.Button(I18n.T("Set Selected Material as Default")) || KeyShortcuts.Activated(KeyShortcut.SetMaterial)) && matEdit is not null)
             {
                 var oldMat = RainEd.Instance.Level.DefaultMaterial;
                 var newMat = matEdit.SelectedMaterial;
@@ -63,7 +63,7 @@ partial class TileEditor : IEditorMode
 
             if (ImGui.IsItemHovered() && matEdit is null)
             {
-                ImGui.SetTooltip("A material is not selected");
+                ImGui.SetTooltip(I18n.T("A material is not selected"));
             }
 
             // search bar
@@ -82,7 +82,7 @@ partial class TileEditor : IEditorMode
                     if (forceSelection == i)
                         flags |= ImGuiTabItemFlags.SetSelected;
                     
-                    if (ImGuiExt.BeginTabItem(editMode.TabName, flags))
+                    if (ImGuiExt.BeginTabItem(I18n.T(editMode.TabName) + "###" + editMode.TabName, flags))
                     {
                         if (currentMode != i)
                         {
@@ -122,7 +122,7 @@ partial class TileEditor : IEditorMode
             var previewWindowFlags = ImGuiWindowFlags.NoFocusOnAppearing | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse;
             if (tileGfxPreview)
             {
-                if (ImGui.Begin("Graphics###TileGfxPreview", ref tileGfxPreview, previewWindowFlags))
+                if (ImGui.Begin(I18n.T("Graphics") + "###TileGfxPreview", ref tileGfxPreview, previewWindowFlags))
                 {
                     if (selectedTile is not null &&
                         RainEd.Instance.AssetGraphics.GetTileTexture(selectedTile.Name) is not null)
@@ -161,7 +161,7 @@ partial class TileEditor : IEditorMode
             // window for tile spec preview
             if (tileSpecPreview)
             {
-                if (ImGui.Begin("Geometry###TileSpecPreview", ref tileSpecPreview, previewWindowFlags))
+                if (ImGui.Begin(I18n.T("Geometry") + "###TileSpecPreview", ref tileSpecPreview, previewWindowFlags))
                 {
                     if (selectedTile is not null)
                     {

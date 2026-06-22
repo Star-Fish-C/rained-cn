@@ -53,6 +53,13 @@ static class RainedModule
             lua.PushBoolean(!LuaInterface.Host.IsGui);
             return 1;
         });
+
+        lua.ModuleFunction("translate", static (nint luaPtr) =>
+        {
+            var lua = Lua.FromIntPtr(luaPtr);
+            lua.PushString(I18n.T(lua.CheckString(1)));
+            return 1;
+        });
         
         lua.ModuleFunction("getAssetDirectory", static (nint luaPtr) =>
         {

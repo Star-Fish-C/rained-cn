@@ -180,7 +180,7 @@ static class PreferencesWindow
         {
             var lastNavTab = selectedNavTab;
 
-            if (ImGui.Begin(WindowName, ref isWindowOpen, ImGuiWindowFlags.NoDocking))
+            if (ImGui.Begin(I18n.T(WindowName) + "###Preferences", ref isWindowOpen, ImGuiWindowFlags.NoDocking))
             {
                 // show navigation sidebar
                 ImGui.BeginChild("Nav", new Vector2(ImGui.GetTextLineHeight() * 12.0f, ImGui.GetContentRegionAvail().Y), ImGuiChildFlags.Border);
@@ -191,7 +191,7 @@ static class PreferencesWindow
                         if (i == (int)NavTabEnum.Scripts && !LuaScripting.Modules.GuiModule.HasPreferencesCallbacks)
                             continue;
                         
-                        if (ImGui.Selectable(NavTabs[i], i == (int)selectedNavTab))
+                        if (ImGui.Selectable(I18n.T(NavTabs[i]), i == (int)selectedNavTab))
                         {
                             selectedNavTab = (NavTabEnum)i;
                         }
@@ -332,10 +332,10 @@ static class PreferencesWindow
 
         ImGui.PushItemWidth(ImGui.GetTextLineHeight() * 10f);
 
-        ImGui.SeparatorText("Files");
+        ImGui.SeparatorText(I18n.T("Files"));
         {
             var saveBackups = prefs.SaveFileBackups;
-            if (ImGui.Checkbox("Save backups of files", ref saveBackups))
+            if (ImGui.Checkbox(I18n.T("Save backups of files"), ref saveBackups))
             {
                 prefs.SaveFileBackups = saveBackups;
             }
@@ -351,7 +351,7 @@ static class PreferencesWindow
             }
 
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Backup Directory");
+            ImGui.Text(I18n.T("Backup Directory"));
             ImGui.SameLine();
 
             var backupDir = prefs.BackupDirectory;
@@ -361,7 +361,7 @@ static class PreferencesWindow
             }
 
             int backupOverwritePolicy = (int)prefs.BackupOverwritePolicy;
-            if (ImGui.Combo("Backup overwrite policy", ref backupOverwritePolicy, "Move to trash\0Delete\0"))
+            if (ImGui.Combo(I18n.T("Backup overwrite policy") + "###Backup overwrite policy", ref backupOverwritePolicy, I18n.Combo("Move to trash", "Delete")))
             {
                 prefs.BackupOverwritePolicy = (UserPreferences.BackupOverwritePolicyEnum)backupOverwritePolicy;
             }
@@ -383,7 +383,7 @@ static class PreferencesWindow
             ImGui.Separator();
 
             int levelFileFormat = (int)prefs.PreferredFileFormat;
-            if (ImGui.Combo("Preferred level file format", ref levelFileFormat, "txt\0rwlz\0"))
+            if (ImGui.Combo(I18n.T("Preferred level file format") + "###Preferred level file format", ref levelFileFormat, "txt\0rwlz\0"))
             {
                 prefs.PreferredFileFormat = (LevelData.FileFormats.LevelFileFormat)levelFileFormat;
             }
@@ -405,10 +405,10 @@ static class PreferencesWindow
             }
         }
 
-        ImGui.SeparatorText("Assets");
+        ImGui.SeparatorText(I18n.T("Assets"));
         {
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Data Path");
+            ImGui.Text(I18n.T("Data Path"));
             ImGui.SameLine();
             ImGui.TextDisabled("(?)");
             if (ImGui.BeginItemTooltip())
@@ -443,9 +443,9 @@ static class PreferencesWindow
             // subdirectories
             ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
             var flags = ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings;
-            if (ImGui.IsPopupOpen("Error") && ImGui.BeginPopupModal("Error", flags))
+            if (ImGui.IsPopupOpen("Error") && ImGui.BeginPopupModal(I18n.T("Error") + "###Error", flags))
             {
-                ImGui.Text("The given data folder is missing the following subdirectories:");
+                ImGui.Text(I18n.T("The given data folder is missing the following subdirectories:"));
 
                 if (missingDirs is not null)
                 {
@@ -466,7 +466,7 @@ static class PreferencesWindow
             }
         }
 
-        ImGui.SeparatorText("Miscellaneous");
+        ImGui.SeparatorText(I18n.T("Miscellaneous"));
         {
             // they've brainwashed me to not add this
             //bool showHiddenEffects = prefs.ShowDeprecatedEffects;
@@ -474,11 +474,11 @@ static class PreferencesWindow
             //    prefs.ShowDeprecatedEffects = showHiddenEffects;
 
             bool versionCheck = prefs.CheckForUpdates;
-            if (ImGui.Checkbox("Check for updates", ref versionCheck))
+            if (ImGui.Checkbox(I18n.T("Check for updates"), ref versionCheck))
                 prefs.CheckForUpdates = versionCheck;
 
             bool optimizedTile = prefs.OptimizedTilePreviews;
-            if (ImGui.Checkbox("Optimized tile previews", ref optimizedTile))
+            if (ImGui.Checkbox(I18n.T("Optimized tile previews"), ref optimizedTile))
                 prefs.OptimizedTilePreviews = optimizedTile;
 
             ImGui.SameLine();
@@ -501,7 +501,7 @@ static class PreferencesWindow
             // sky roots fix
             {
                 var skyRootsFix = activeDrizzleConfig!.SkyRootsFix;
-                if (ImGui.Checkbox("Require in-bounds effects by default", ref skyRootsFix))
+                if (ImGui.Checkbox(I18n.T("Require in-bounds effects by default"), ref skyRootsFix))
                 {
                     activeDrizzleConfig.SkyRootsFix = skyRootsFix;
                     
@@ -523,7 +523,7 @@ static class PreferencesWindow
             ImGui.Separator();
 
             var simSpeed = prefs.FastSimulationSpeed;
-            if (ImGui.SliderFloat("Fast simulation speed", ref simSpeed, 1f, 20f, "%.0fx"))
+            if (ImGui.SliderFloat(I18n.T("Fast simulation speed") + "###Fast simulation speed", ref simSpeed, 1f, 20f, "%.0fx"))
             {
                 prefs.FastSimulationSpeed = simSpeed;
             }
@@ -563,7 +563,31 @@ static class PreferencesWindow
 
         var prefs = RainEd.Instance.Preferences;
 
-        ImGui.SeparatorText("Level Colors");
+        ImGui.SeparatorText(I18n.T("Language"));
+        {
+            if (ImGui.BeginCombo(I18n.T("Language"), I18n.LanguageName(prefs.Language)))
+            {
+                foreach (var lang in I18n.Languages)
+                {
+                    bool selected = prefs.Language == lang.Code;
+                    if (ImGui.Selectable(lang.Name, selected))
+                    {
+                        prefs.Language = lang.Code;
+                        if (lang.Code != I18n.English && Fonts.SetFont("Microsoft YaHei"))
+                        {
+                            prefs.Font = "Microsoft YaHei";
+                        }
+                    }
+
+                    if (selected)
+                        ImGui.SetItemDefaultFocus();
+                }
+
+                ImGui.EndCombo();
+            }
+        }
+
+        ImGui.SeparatorText(I18n.T("Level Colors"));
         {
             if (entered)
             {
@@ -582,10 +606,10 @@ static class PreferencesWindow
             {
                 layerColor1 = new HexColor("#000000").ToVector3();
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Layer Color 1");
+            ImGui.Text(I18n.T("Layer Color 1"));
 
             ImGui.ColorEdit3("##Layer Color 2", ref layerColor2);
 
@@ -594,10 +618,10 @@ static class PreferencesWindow
             {
                 layerColor2 = new HexColor("#59ff59").ToVector3();
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Layer Color 2");
+            ImGui.Text(I18n.T("Layer Color 2"));
 
             ImGui.ColorEdit3("##Layer Color 3", ref layerColor3);
 
@@ -606,10 +630,10 @@ static class PreferencesWindow
             {
                 layerColor3 = new HexColor("#ff1e1e").ToVector3();
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Layer Color 3");
+            ImGui.Text(I18n.T("Layer Color 3"));
 
             ImGui.ColorEdit3("##Background Color", ref bgColor);
 
@@ -618,10 +642,10 @@ static class PreferencesWindow
             {
                 bgColor = new HexColor(127, 127, 127).ToVector3();
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Background Color");
+            ImGui.Text(I18n.T("Background Color"));
 
             // L1 TILE SPECS
             ImGui.ColorEdit4("##Tile Specs L1", ref tileSpec1Color);
@@ -630,10 +654,10 @@ static class PreferencesWindow
             {
                 tileSpec1Color = new HexColorRGBA("#99FF5B").ToVector4();
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Tile Specs L1");
+            ImGui.Text(I18n.T("Tile Specs L1"));
 
             // L2 TILE SPECS
             ImGui.ColorEdit4("##Tile Specs L2", ref tileSpec2Color);
@@ -642,10 +666,10 @@ static class PreferencesWindow
             {
                 tileSpec2Color = new HexColorRGBA("#61A338").ToVector4();
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Tile Specs L2");
+            ImGui.Text(I18n.T("Tile Specs L2"));
 
             // grid opacity
             float gridOpacity = prefs.GridOpacity;
@@ -658,10 +682,10 @@ static class PreferencesWindow
             {
                 prefs.GridOpacity = UserPreferences.DefaultGridOpacity;
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Grid Opacity");
+            ImGui.Text(I18n.T("Grid Opacity"));
 
             // spec opacity
             float specOpacity = prefs.TileSpecOpacity;
@@ -674,10 +698,10 @@ static class PreferencesWindow
             {
                 prefs.TileSpecOpacity = UserPreferences.DefaultTileSpecOpacity;
             }
-            ImGui.SetItemTooltip("Reset");
+            ImGui.SetItemTooltip(I18n.T("Reset"));
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Tile Specs Opacity");
+            ImGui.Text(I18n.T("Tile Specs Opacity"));
 
             // update layer colors in preferences class
             prefs.LayerColor1 = Vec3ToHexColor(layerColor1);
@@ -688,18 +712,18 @@ static class PreferencesWindow
             prefs.TileSpec2 = Vec4ToHexColor(tileSpec2Color);
         }
 
-        ImGui.SeparatorText("Interface");
+        ImGui.SeparatorText(I18n.T("Interface"));
         {
             bool showCameraNumbers = prefs.ShowCameraNumbers;
-            if (ImGui.Checkbox("Show camera numbers", ref showCameraNumbers))
+            if (ImGui.Checkbox(I18n.T("Show camera numbers"), ref showCameraNumbers))
                 prefs.ShowCameraNumbers = showCameraNumbers;
 
             bool materialSelectorPreviews = prefs.MaterialSelectorPreview;
-            if (ImGui.Checkbox("Show previews in the material selector", ref materialSelectorPreviews))
+            if (ImGui.Checkbox(I18n.T("Show previews in the material selector"), ref materialSelectorPreviews))
                 prefs.MaterialSelectorPreview = materialSelectorPreviews;
 
             bool doubleClickToCreateProp = prefs.DoubleClickToCreateProp;
-            if (ImGui.Checkbox("Double-click to create props", ref doubleClickToCreateProp))
+            if (ImGui.Checkbox(I18n.T("Double-click to create props"), ref doubleClickToCreateProp))
                 prefs.DoubleClickToCreateProp = doubleClickToCreateProp;
 
             ImGui.SameLine();
@@ -718,11 +742,11 @@ static class PreferencesWindow
             }
 
             bool hideScreenSize = prefs.HideScreenSize;
-            if (ImGui.Checkbox("Hide screen size parameters in the resize window", ref hideScreenSize))
+            if (ImGui.Checkbox(I18n.T("Hide screen size parameters in the resize window"), ref hideScreenSize))
                 prefs.HideScreenSize = hideScreenSize;
 
             bool removeCangleLimit = prefs.RemoveCameraAngleLimit;
-            if (ImGui.Checkbox("Unlock camera angles", ref removeCangleLimit))
+            if (ImGui.Checkbox(I18n.T("Unlock camera angles"), ref removeCangleLimit))
                 prefs.RemoveCameraAngleLimit = removeCangleLimit;
 
             ImGui.SameLine();
@@ -737,11 +761,11 @@ static class PreferencesWindow
             }
 
             bool geoMaskMouseDecor = prefs.GeometryMaskMouseDecor;
-            if (ImGui.Checkbox("Geometry mask mouse decoration", ref geoMaskMouseDecor))
+            if (ImGui.Checkbox(I18n.T("Geometry mask mouse decoration"), ref geoMaskMouseDecor))
                 prefs.GeometryMaskMouseDecor = geoMaskMouseDecor;
 
             bool minUi = prefs.MinimalStatusBar;
-            if (ImGui.Checkbox("Minimal status bar", ref minUi))
+            if (ImGui.Checkbox(I18n.T("Minimal status bar"), ref minUi))
                 prefs.MinimalStatusBar = minUi;
 
             ImGui.SameLine();
@@ -756,7 +780,7 @@ static class PreferencesWindow
             }
 
             bool hideEditSwitch = prefs.HideEditorSwitch;
-            if (ImGui.Checkbox("Hide editor switch", ref hideEditSwitch))
+            if (ImGui.Checkbox(I18n.T("Hide editor switch"), ref hideEditSwitch))
                 prefs.HideEditorSwitch = hideEditSwitch;
 
             ImGui.Separator();
@@ -765,7 +789,7 @@ static class PreferencesWindow
 
             // geo icon set
             var geometryIcons = prefs.GeometryIcons;
-            if (ImGui.BeginCombo("Geometry icon set", geometryIcons))
+            if (ImGui.BeginCombo(I18n.T("Geometry icon set") + "###Geometry icon set", geometryIcons))
             {
                 foreach (var str in GeometryIcons.Sets)
                 {
@@ -785,22 +809,22 @@ static class PreferencesWindow
 
             // camera border view mode
             var camBorderMode = (int)prefs.CameraBorderMode;
-            if (ImGui.Combo("Camera border view mode", ref camBorderMode, "Inner Border\0Outer Border\0Both Borders"))
+            if (ImGui.Combo(I18n.T("Camera border view mode") + "###Camera border view mode", ref camBorderMode, I18n.Combo("Inner Border", "Outer Border", "Both Borders")))
                 prefs.CameraBorderMode = (UserPreferences.CameraBorderModeOption)camBorderMode;
 
             // autotile mouse mode
             var autotileMouseMode = (int)prefs.AutotileMouseMode;
-            if (ImGui.Combo("Autotile mouse mode", ref autotileMouseMode, "Click\0Hold"))
+            if (ImGui.Combo(I18n.T("Autotile mouse mode") + "###Autotile mouse mode", ref autotileMouseMode, I18n.Combo("Click", "Hold")))
                 prefs.AutotileMouseMode = (UserPreferences.AutotileMouseModeOptions)autotileMouseMode;
 
             // tile placement mode toggle
             var tilePlacementToggle = prefs.TilePlacementModeToggle ? 1 : 0;
-            if (ImGui.Combo("Tile placement modifier mode", ref tilePlacementToggle, "Hold\0Toggle"))
+            if (ImGui.Combo(I18n.T("Tile placement modifier mode") + "###Tile placement modifier mode", ref tilePlacementToggle, I18n.Combo("Hold", "Toggle")))
                 prefs.TilePlacementModeToggle = tilePlacementToggle != 0;
 
             // prop selection layer filter
             var propSelectionLayerFilter = (int)prefs.PropSelectionLayerFilter;
-            if (ImGui.Combo("Prop selection layer filter", ref propSelectionLayerFilter, "All\0Current\0In Front"))
+            if (ImGui.Combo(I18n.T("Prop selection layer filter") + "###Prop selection layer filter", ref propSelectionLayerFilter, I18n.Combo("All", "Current", "In Front")))
                 prefs.PropSelectionLayerFilter = (UserPreferences.PropSelectionLayerFilterOption)propSelectionLayerFilter;
 
             ImGui.SameLine();
@@ -827,7 +851,7 @@ static class PreferencesWindow
 
             // light editor control scheme
             var lightEditorControlScheme = (int)prefs.LightEditorControlScheme;
-            if (ImGui.Combo("Light editor control scheme", ref lightEditorControlScheme, "Mouse\0Keyboard\0"))
+            if (ImGui.Combo(I18n.T("Light editor control scheme") + "###Light editor control scheme", ref lightEditorControlScheme, I18n.Combo("Mouse", "Keyboard")))
                 prefs.LightEditorControlScheme = (UserPreferences.LightEditorControlSchemeOption)lightEditorControlScheme;
 
             ImGui.SameLine();
@@ -851,7 +875,7 @@ static class PreferencesWindow
             }
 
             var effectPlacementPos = (int)prefs.EffectPlacementPosition;
-            if (ImGui.Combo("Effect placement position", ref effectPlacementPos, "Before selected\0After selected\0First\0Last\0"))
+            if (ImGui.Combo(I18n.T("Effect placement position") + "###Effect placement position", ref effectPlacementPos, I18n.Combo("Before selected", "After selected", "First", "Last")))
                 prefs.EffectPlacementPosition = (UserPreferences.EffectPlacementPositionOption)effectPlacementPos;
 
             ImGui.SameLine();
@@ -868,7 +892,7 @@ static class PreferencesWindow
             }
 
             var effectPlacementAltPos = (int)prefs.EffectPlacementAltPosition;
-            if (ImGui.Combo("Effect placement alt position", ref effectPlacementAltPos, "Before selected\0After selected\0First\0Last\0"))
+            if (ImGui.Combo(I18n.T("Effect placement alt position") + "###Effect placement alt position", ref effectPlacementAltPos, I18n.Combo("Before selected", "After selected", "First", "Last")))
                 prefs.EffectPlacementAltPosition = (UserPreferences.EffectPlacementPositionOption)effectPlacementAltPos;
 
             ImGui.SameLine();
@@ -888,7 +912,7 @@ static class PreferencesWindow
             ImGui.PopItemWidth();
         }
 
-        ImGui.SeparatorText("Shortcut Nodes");
+        ImGui.SeparatorText(I18n.T("Shortcut Nodes"));
         {
             ImGui.TextDisabled("(?)");
             if (ImGui.BeginItemTooltip())
@@ -919,7 +943,7 @@ static class PreferencesWindow
             if (ImGui.BeginTable("##t", flagNames.Length))
             {
                 for (int i = 0; i < flagNames.Length; i++)
-                    ImGui.TableSetupColumn(flagNames[i], colFlags);
+                    ImGui.TableSetupColumn(I18n.T(flagNames[i]), colFlags);
                 
                 ImGui.TableAngledHeadersRow();
                 ImGui.TableNextRow();
@@ -952,7 +976,7 @@ static class PreferencesWindow
             // }
         }
         
-        ImGui.SeparatorText("Display");
+        ImGui.SeparatorText(I18n.T("Display"));
         {
             if (entered)
             {
@@ -977,7 +1001,7 @@ static class PreferencesWindow
             }
             ImGui.SameLine();
             ImGui.AlignTextToFramePadding();
-            ImGui.Text("Content Scale");
+            ImGui.Text(I18n.T("Content Scale"));
 
             ImGui.SameLine();
             ImGui.TextDisabled("(?)");
@@ -993,7 +1017,7 @@ static class PreferencesWindow
                 ImGui.PushItemWidth(ImGui.GetFontSize() * 12f);
 
                 var curFont = Fonts.GetCurrentFont();
-                if (ImGui.BeginCombo("Font", curFont ?? ""))
+                if (ImGui.BeginCombo(I18n.T("Font") + "###Font", curFont ?? ""))
                 {
                     foreach (var fontName in Fonts.AvailableFonts)
                     {
@@ -1012,7 +1036,7 @@ static class PreferencesWindow
                 }
 
                 var fontSize = prefs.FontSize;
-                if (ImGui.InputInt("Font size", ref fontSize))
+                if (ImGui.InputInt(I18n.T("Font size") + "###Font size", ref fontSize))
                     prefs.FontSize = fontSize;
                 
                 if (ImGui.IsItemDeactivatedAfterEdit())
@@ -1022,7 +1046,7 @@ static class PreferencesWindow
                 ImGui.TextDisabled("(?)");
                 if (ImGui.BeginItemTooltip())
                 {
-                    ImGui.Text("The default value for this is 13.");
+                    ImGui.Text(I18n.T("The default value for this is 13."));
                     ImGui.EndTooltip();
                 }
 
@@ -1032,7 +1056,7 @@ static class PreferencesWindow
             // Vsync
             {
                 bool vsync = Boot.Window.VSync;
-                if (ImGui.Checkbox("Vsync", ref vsync))
+                if (ImGui.Checkbox(I18n.T("Vsync"), ref vsync))
                 {
                     Boot.Window.VSync = vsync;
                     prefs.Vsync = vsync;
@@ -1072,7 +1096,7 @@ static class PreferencesWindow
 
                     ImGui.SameLine();
                     ImGui.AlignTextToFramePadding();
-                    ImGui.Text("Refresh rate");
+                    ImGui.Text(I18n.T("Refresh rate"));
                 }
             }
 
@@ -1082,10 +1106,10 @@ static class PreferencesWindow
 
     private static void ShowShortcutsTab()
     {
-        ImGui.SeparatorText("Accessibility");
+        ImGui.SeparatorText(I18n.T("Accessibility"));
         ShortcutButton(KeyShortcut.RightMouse);
 
-        ImGui.SeparatorText("General");
+        ImGui.SeparatorText(I18n.T("General"));
         ShortcutButton(KeyShortcut.ViewZoomIn);
         ShortcutButton(KeyShortcut.ViewZoomOut);
         ImGui.Separator();
@@ -1106,7 +1130,7 @@ static class PreferencesWindow
         ShortcutButton(KeyShortcut.Render);
         ShortcutButton(KeyShortcut.ExportGeometry);
 
-        ImGui.SeparatorText("Editing");
+        ImGui.SeparatorText(I18n.T("Editing"));
         ShortcutButton(KeyShortcut.SelectEditor);
         ShortcutButton(KeyShortcut.AdjustView);
         ShortcutButton(KeyShortcut.EnvironmentEditor);
@@ -1140,7 +1164,7 @@ static class PreferencesWindow
         ShortcutButton(KeyShortcut.ToggleViewCameras);
         ShortcutButton(KeyShortcut.ToggleViewNodeIndices);
 
-        ImGui.SeparatorText("Geometry");
+        ImGui.SeparatorText(I18n.T("Geometry"));
         ShortcutButton(KeyShortcut.ToggleLayer1);
         ShortcutButton(KeyShortcut.ToggleLayer2);
         ShortcutButton(KeyShortcut.ToggleLayer3);
@@ -1152,18 +1176,18 @@ static class PreferencesWindow
         ShortcutButton(KeyShortcut.ToolShortcutEntrance);
         ShortcutButton(KeyShortcut.ToolShortcutDot);
 
-        ImGui.SeparatorText("Tiles");
+        ImGui.SeparatorText(I18n.T("Tiles"));
         ShortcutButton(KeyShortcut.SetMaterial);
         ImGui.Separator();
         ShortcutButton(KeyShortcut.TileForceGeometry);
         ShortcutButton(KeyShortcut.TileForcePlacement);
         ShortcutButton(KeyShortcut.TileIgnoreDifferent);
 
-        ImGui.SeparatorText("Cameras");
+        ImGui.SeparatorText(I18n.T("Cameras"));
         ShortcutButton(KeyShortcut.CameraSnapX);
         ShortcutButton(KeyShortcut.CameraSnapY);
 
-        ImGui.SeparatorText("Light");
+        ImGui.SeparatorText(I18n.T("Light"));
         ShortcutButton(KeyShortcut.ResetBrushTransform);
         ShortcutButton(KeyShortcut.ScaleLightBrush);
         ShortcutButton(KeyShortcut.RotateLightBrush);
@@ -1178,7 +1202,7 @@ static class PreferencesWindow
         ShortcutButton(KeyShortcut.PreviousBrush);
         ShortcutButton(KeyShortcut.NextBrush);
 
-        ImGui.SeparatorText("Props");
+        ImGui.SeparatorText(I18n.T("Props"));
         ShortcutButton(KeyShortcut.ToggleVertexMode);
         ShortcutButton(KeyShortcut.RopeSimulation);
         ShortcutButton(KeyShortcut.RopeSimulationFast);
@@ -1258,7 +1282,7 @@ static class PreferencesWindow
         {
             KeyShortcuts.Reset(id);
         }
-        ImGui.SetItemTooltip("Reset");
+        ImGui.SetItemTooltip(I18n.T("Reset"));
 
         ImGui.SameLine();
         ImGui.Text(nameOverride ?? KeyShortcuts.GetName(id));
@@ -1271,7 +1295,7 @@ static class PreferencesWindow
         static void ConfigCheckbox(string key)
         {
             bool v = activeDrizzleConfig!.GetConfig(key);
-            if (ImGui.Checkbox(key, ref v))
+            if (ImGui.Checkbox(I18n.T(key) + "###" + key, ref v))
             {
                 activeDrizzleConfig.TrySetConfig(key, v);
                 
@@ -1280,20 +1304,20 @@ static class PreferencesWindow
             }
         }
 
-        ImGui.SeparatorText("Options");
+        ImGui.SeparatorText(I18n.T("Options"));
 
         bool boolRef;
         var prefs = RainEd.Instance.Preferences;
 
         ImGui.BeginDisabled(DrizzleManager.StaticRuntime is null);
-        if (ImGui.Button("Discard Drizzle runtime"))
+        if (ImGui.Button(I18n.T("Discard Drizzle runtime")))
             DrizzleManager.DisposeStaticRuntime();
         ImGui.EndDisabled();
 
         // static lingo runtime
         {
             boolRef = prefs.StaticDrizzleLingoRuntime;
-            if (ImGui.Checkbox("Persistent Drizzle runtime", ref boolRef))
+            if (ImGui.Checkbox(I18n.T("Persistent Drizzle runtime"), ref boolRef))
             {
                 prefs.StaticDrizzleLingoRuntime = boolRef;
                 if (!boolRef)
@@ -1302,24 +1326,24 @@ static class PreferencesWindow
             
             ImGui.SameLine();
             ImGui.TextDisabled("(?)");
-            ImGui.SetItemTooltip(
+            ImGui.SetItemTooltip(I18n.T(
                 """
                 This will keep a Drizzle runtime in the background
                 after a render, instead of discarding it and
                 recreating a new one on the next render. This
                 results in more idle RAM usage, but will decrease
                 the time it takes for subsequent renders.
-                """);
+                """));
         }
 
         // show render preview
         {
             boolRef = prefs.ShowRenderPreview;
-            if (ImGui.Checkbox("Show render preview", ref boolRef))
+            if (ImGui.Checkbox(I18n.T("Show render preview"), ref boolRef))
                 prefs.ShowRenderPreview = boolRef;
         }
         
-        ImGui.SeparatorText("Rendering");
+        ImGui.SeparatorText(I18n.T("Rendering"));
 
         ConfigCheckbox("Grime on gradients");
         ConfigCheckbox("Grime");
@@ -1333,7 +1357,7 @@ static class PreferencesWindow
         if (ImGui.BeginItemTooltip())
         {
             ImGui.PushTextWrapPos(ImGui.GetFontSize() * 20.0f);
-            ImGui.TextWrapped("After changing this option, a restart is advised in order to update the props list.");
+            ImGui.TextWrapped(I18n.T("After changing this option, a restart is advised in order to update the props list."));
             ImGui.PopTextWrapPos();
             ImGui.EndTooltip();
         }
@@ -1353,7 +1377,7 @@ static class PreferencesWindow
         if (ImGui.BeginItemTooltip())
         {
             ImGui.PushTextWrapPos(ImGui.GetFontSize() * 20.0f);
-            ImGui.TextWrapped("This will set the value of the \"Require In-Bounds\" effect property for any newly created effects or effects from levels made before this option was added. This is an alias for the \"Require in-bounds effects by default\" option in the General page.");
+            ImGui.TextWrapped(I18n.T("This will set the value of the \"Require In-Bounds\" effect property for any newly created effects or effects from levels made before this option was added. This is an alias for the \"Require in-bounds effects by default\" option in the General page."));
             ImGui.PopTextWrapPos();
             ImGui.EndTooltip();
         }

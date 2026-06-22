@@ -7,6 +7,7 @@
 
 local path = require("path")
 local helpers = require("helpers")
+local T = rained.translate
 
 local config = {
     version = "2.0.0",
@@ -22,7 +23,7 @@ local function levelDirCheck(dir)
     local a = path.abspath(dir .. path.sep)
     local b = path.abspath(path.join(rained.getDataDirectory(), "Levels") .. path.sep)
     if a == b then
-        rained.alert("Cannot use the levels directory")
+        rained.alert(T("Cannot use the levels directory"))
         return false
     else
         return true
@@ -84,11 +85,11 @@ if path.isfile(configFilePath) then
             if s then
                 config = data
             else
-                rained.alert("Error loading rendercopy config")
+                rained.alert(T("Error loading rendercopy config"))
                 error(("error loading rendercopy.conf: %s"):format(err))
             end
         else
-            rained.alert("Error loading rendercopy config")
+            rained.alert(T("Error loading rendercopy config"))
             error(("error loading rendercopy.conf: %s"):format(err))
         end
     else
@@ -200,10 +201,10 @@ if not rained.isBatchMode() then
 
         imgui.SeparatorText("RenderCopy")
 
-        imgui.Text("author: pkhead")
-        imgui.TextWrapped("This is a script which copies files from renders to a given folder. You can put any folder, but you probably want to copy it to your region's rooms folder.")
+        imgui.Text(T("author: pkhead"))
+        imgui.TextWrapped(T("This is a script which copies files from renders to a given folder. You can put any folder, but you probably want to copy it to your region's rooms folder."))
 
-        s, config.enabled = imgui.Checkbox("Enable", config.enabled)
+        s, config.enabled = imgui.Checkbox(T("Enable"), config.enabled)
         if s then
             saveConfig()
         end
@@ -211,9 +212,9 @@ if not rained.isBatchMode() then
         local acronymColWidth = imgui.CalcTextSize(0, 0, "XXXXXX")
 
         if imgui.BeginTable("configTable", 3, imgui.TableFlags_Borders | imgui.TableFlags_RowBg | imgui.TableFlags_Resizable | imgui.TableFlags_SizingFixedFit) then
-            imgui.TableSetupColumn("Acronym", imgui.TableColumnFlags_WidthFixed, acronymColWidth)
-            imgui.TableSetupColumn("Folder", imgui.TableColumnFlags_WidthStretch)
-            imgui.TableSetupColumn("Actions")
+            imgui.TableSetupColumn(T("Acronym"), imgui.TableColumnFlags_WidthFixed, acronymColWidth)
+            imgui.TableSetupColumn(T("Folder"), imgui.TableColumnFlags_WidthStretch)
+            imgui.TableSetupColumn(T("Actions"))
             imgui.TableHeadersRow()
 
             local indexToRemove = nil
@@ -244,7 +245,7 @@ if not rained.isBatchMode() then
                     end
 
                     imgui.TableNextColumn()
-                    if imgui.Button("OK") then
+                    if imgui.Button(T("OK")) then
                         dirConfig.prefix = string.upper(tostring(rowEdit.acronymInputBuf))
                         dirConfig.path = rowEdit.path
 
@@ -254,7 +255,7 @@ if not rained.isBatchMode() then
                     end
 
                     imgui.SameLine()
-                    if imgui.Button("Cancel") then
+                    if imgui.Button(T("Cancel")) then
                         currentlyEditedRowIndex = nil
                         rowEdit = nil
                     end
@@ -270,7 +271,7 @@ if not rained.isBatchMode() then
                     imgui.TableNextColumn()
                     imgui.BeginDisabled(currentlyEditedRowIndex ~= nil)
 
-                    if imgui.Button("Edit") then
+                    if imgui.Button(T("Edit")) then
                         currentlyEditedRowIndex = i
                         rowEdit = {
                             acronymInputBuf = imgui.newBuffer(64),
@@ -281,7 +282,7 @@ if not rained.isBatchMode() then
                     end
 
                     imgui.SameLine()
-                    if imgui.Button("Delete") then
+                    if imgui.Button(T("Delete")) then
                         indexToRemove = i
                     end
 
@@ -299,7 +300,7 @@ if not rained.isBatchMode() then
             end
         end
 
-        if imgui.Button("Add", -0.0000001, 0) then
+        if imgui.Button(T("Add"), -0.0000001, 0) then
             fileBrowser = rained.gui.openFileBrowser("directory", {}, function(dirs)
                 if dirs[1] and levelDirCheck(dirs[1]) then
                     local prefix = "??"
@@ -326,18 +327,18 @@ if not rained.isBatchMode() then
 
         imgui.BeginGroup()
             imgui.AlignTextToFramePadding()
-            imgui.Text("Fallback Mode")
+            imgui.Text(T("Fallback Mode"))
             imgui.SameLine()
             imgui.TextDisabled("(?)")
             if imgui.BeginItemTooltip() then
                 imgui.PushTextWrapPos(imgui.GetTextLineHeight() * 20)
-                imgui.TextWrapped("When a level is rendered and its acronym prefix is not registered, it will copy the level renders to the fallback directory.")
-                imgui.TextWrapped("If \"force\", it will copy all level renders to the fallback directory even if its acronym prefix is registered.")
+                imgui.TextWrapped(T("When a level is rendered and its acronym prefix is not registered, it will copy the level renders to the fallback directory."))
+                imgui.TextWrapped(T("If \"force\", it will copy all level renders to the fallback directory even if its acronym prefix is registered."))
                 imgui.PopTextWrapPos()
                 imgui.EndTooltip()
             end
             imgui.AlignTextToFramePadding()
-            imgui.Text("Fallback Folder")
+            imgui.Text(T("Fallback Folder"))
         imgui.EndGroup()
         imgui.SameLine()
         imgui.BeginGroup()

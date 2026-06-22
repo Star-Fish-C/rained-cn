@@ -8,7 +8,7 @@ namespace Rained.EditorGui.Editors;
 
 class LightEditor : IEditorMode
 {
-    public string Name { get => "Light"; }
+    public string Name { get => I18n.T("Light"); }
     public bool SupportsCellSelection => false;
     
     private readonly LevelWindow window;
@@ -89,7 +89,7 @@ class LightEditor : IEditorMode
     public void Load()
     {
         if (!RainEd.Instance.Level.LightMap.IsLoaded)
-            EditorWindow.ShowNotification("The lightmap is too large to be loaded.");
+            EditorWindow.ShowNotification(I18n.T("The lightmap is too large to be loaded."));
 
         if (changeRecorders.TryGetValue(RainEd.Instance.Level, out var changeRecorder))
             changeRecorder.ClearStrokeData();
@@ -128,16 +128,16 @@ class LightEditor : IEditorMode
     {
         if (warpMode)
         {
-            ImGui.Text("Warp");
+            ImGui.Text(I18n.T("Warp"));
 
             ImGui.SameLine();
-            if (ImGui.Button("OK") || EditorWindow.IsKeyPressed(ImGuiKey.Enter))
+            if (ImGui.Button(I18n.T("OK")) || EditorWindow.IsKeyPressed(ImGuiKey.Enter))
             {
                 warpModeSubmit = true;
             }
 
             ImGui.SameLine();
-            if (ImGui.Button("Cancel") || EditorWindow.IsKeyPressed(ImGuiKey.Escape))
+            if (ImGui.Button(I18n.T("Cancel")) || EditorWindow.IsKeyPressed(ImGuiKey.Escape))
             {
                 warpMode = false;
             }
@@ -155,17 +155,17 @@ class LightEditor : IEditorMode
         brushPreview = false;
         changeRecorders.TryGetValue(level, out var changeRecorder);
 
-        if (ImGui.Begin("Light###Light Catalog", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Light Catalog") + "###Light Catalog", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             if (changeRecorder is null) ImGui.BeginDisabled();
 
             ImGui.PushItemWidth(ImGui.GetTextLineHeight() * 8.0f);
 
-            ImGui.SliderAngle("Light Angle", ref level.LightAngle, 0f, 360f, "%.1f deg");
+            ImGui.SliderAngle(I18n.T("Light Angle") + "###Light Angle", ref level.LightAngle, 0f, 360f, "%.1f deg");
             if (ImGui.IsItemDeactivatedAfterEdit())
                 changeRecorder?.PushParameterChanges();
             
-            ImGui.SliderFloat("Light Distance", ref level.LightDistance, 1f, Level.MaxLightDistance, "%.3f", ImGuiSliderFlags.AlwaysClamp);
+            ImGui.SliderFloat(I18n.T("Light Distance") + "###Light Distance", ref level.LightDistance, 1f, Level.MaxLightDistance, "%.3f", ImGuiSliderFlags.AlwaysClamp);
             if (ImGui.IsItemDeactivatedAfterEdit())
                 changeRecorder?.PushParameterChanges();
             
@@ -225,18 +225,18 @@ class LightEditor : IEditorMode
             if (changeRecorder is null) ImGui.EndDisabled();
         } ImGui.End();
 
-        if (ImGui.Begin("Brush", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Brush") + "###Brush", ImGuiWindowFlags.NoFocusOnAppearing))
         {
-            if (ImGui.Button("Reset Brush") || KeyShortcuts.Activated(KeyShortcut.ResetBrushTransform))
+            if (ImGui.Button(I18n.T("Reset Brush")) || KeyShortcuts.Activated(KeyShortcut.ResetBrushTransform))
             {
                 brushSize = new(50f, 70f);
                 brushRotation = 0f;
             }
 
             var rotInRadians = Util.Mod(brushRotation, 360f) / 180f * MathF.PI;
-            ImGui.DragFloat2("Size", ref brushSize, 2f, 1f, float.PositiveInfinity, "%.0f px", ImGuiSliderFlags.AlwaysClamp);
+            ImGui.DragFloat2(I18n.T("Size") + "###Size", ref brushSize, 2f, 1f, float.PositiveInfinity, "%.0f px", ImGuiSliderFlags.AlwaysClamp);
             if (ImGui.IsItemActive()) brushPreview = true;
-            if (ImGui.SliderAngle("Rotation", ref rotInRadians, 0f, 360f))
+            if (ImGui.SliderAngle(I18n.T("Rotation") + "###Rotation", ref rotInRadians, 0f, 360f))
                 brushRotation = rotInRadians / MathF.PI * 180f;
             if (ImGui.IsItemActive()) brushPreview = true;
 

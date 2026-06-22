@@ -14,7 +14,7 @@ enum TilePlacementFlags
 
 partial class TileEditor : IEditorMode
 {
-    public string Name { get => "Tiles"; }
+    public string Name { get => I18n.T("Tiles"); }
     public bool SupportsCellSelection => true;
 
     private readonly LevelWindow window;
@@ -208,7 +208,7 @@ partial class TileEditor : IEditorMode
         {
             if (chainHolderMode)
             {
-                window.WriteStatus("Chain Attach");
+                window.WriteStatus(I18n.T("Chain Attach"));
             }
             else
             {
@@ -222,17 +222,17 @@ partial class TileEditor : IEditorMode
                         var tile = level.GetTile(mouseCell);
                         if (tile is not null)
                         {
-                            window.WriteStatus(tile.Name, 3);
+                            window.WriteStatus(I18n.Asset(tile.Name), 3);
                         }
                         else
                         {
-                            window.WriteStatus("Stray tile fragment", 3);
+                            window.WriteStatus(I18n.T("Stray tile fragment"), 3);
                         }
                     }
                     else if (mouseCell.Material != 0)
                     {
                         var matInfo = RainEd.Instance.MaterialDatabase.GetMaterial(mouseCell.Material);
-                        window.WriteStatus(matInfo.Name, 3);
+                        window.WriteStatus(I18n.Asset(matInfo.Name), 3);
                     }
                 }
 
@@ -241,20 +241,20 @@ partial class TileEditor : IEditorMode
                 if (editMode is TileEditMode or AutotileEditMode)
                 {
                     if (modifyGeometry)
-                        window.WriteStatus("Force Geometry");
+                        window.WriteStatus(I18n.T("Force Geometry"));
                     else if (forcePlace)
-                        window.WriteStatus("Force Placement");
+                        window.WriteStatus(I18n.T("Force Placement"));
                     
                     if (disallowMatOverwrite)
-                        window.WriteStatus("Ignore Materials");
+                        window.WriteStatus(I18n.T("Ignore Materials"));
                 }
                 else if (editMode is MaterialEditMode)
                 {
                     if (disallowMatOverwrite)
-                        window.WriteStatus("Disallow Overwrite");
+                        window.WriteStatus(I18n.T("Disallow Overwrite"));
 
                     if (modifyGeometry)
-                        window.WriteStatus("Force Geometry");
+                        window.WriteStatus(I18n.T("Force Geometry"));
                 }
             }
 

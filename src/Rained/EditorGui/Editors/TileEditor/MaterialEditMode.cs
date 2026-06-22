@@ -34,7 +34,11 @@ class MaterialCatalogWidget(MaterialEditMode editor) : TileEditorCatalog
             for (int j = 0; j < matDb.Categories[i].Materials.Count; j++)
             {
                 // this material passes the search, so add this group to the search results
-                if (matDb.Categories[i].Materials[j].Name.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase))
+                var matName = matDb.Categories[i].Materials[j].Name;
+                if (
+                    matName.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase) ||
+                    I18n.Asset(matName).Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase)
+                )
                 {
                     matSearchResults.Add(i);
                     break;
@@ -51,7 +55,7 @@ class MaterialCatalogWidget(MaterialEditMode editor) : TileEditorCatalog
         {
             var group = matDb.Categories[i];
             
-            if (ImGui.Selectable(group.Name, editor.SelectedGroup == i) || matSearchResults.Count == 1)
+            if (ImGui.Selectable(I18n.Asset(group.Name) + "###" + group.Name, editor.SelectedGroup == i) || matSearchResults.Count == 1)
                 editor.SelectedGroup = i;
         }
     }
@@ -68,10 +72,14 @@ class MaterialCatalogWidget(MaterialEditMode editor) : TileEditorCatalog
             var mat = matList[i];
 
             // don't show this prop if it doesn't pass search test
-            if (!mat.Name.Contains(SearchQuery, StringComparison.CurrentCultureIgnoreCase))
+            var displayName = I18n.Asset(mat.Name);
+            if (
+                !mat.Name.Contains(SearchQuery, StringComparison.CurrentCultureIgnoreCase) &&
+                !displayName.Contains(SearchQuery, StringComparison.CurrentCultureIgnoreCase)
+            )
                 continue;
             
-            if (ColoredSelectable(mat.Name, mat.Color, mat.ID == editor.SelectedMaterial))
+            if (ColoredSelectable(displayName + "###" + mat.Name, mat.Color, mat.ID == editor.SelectedMaterial))
             {
                 editor.SelectedMaterial = mat.ID;
             }

@@ -47,7 +47,9 @@ abstract class CatalogWidget
 
     protected bool PassesSearchQuery(string value)
     {
-        return string.IsNullOrEmpty(searchQuery) || value.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase);
+        return string.IsNullOrEmpty(searchQuery) ||
+            value.Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase) ||
+            I18n.Asset(value).Contains(searchQuery, StringComparison.CurrentCultureIgnoreCase);
     }
 
     public void Draw()
@@ -58,7 +60,7 @@ abstract class CatalogWidget
         ImGui.SetNextItemWidth(widgetWidth);
         if (HasSearch)
         {
-            if (ImGui.InputTextWithHint("##Search", "Search...", ref searchQuery, 128, searchInputFlags))
+            if (ImGui.InputTextWithHint("##Search", I18n.T("Search..."), ref searchQuery, 128, searchInputFlags))
             {
                 ProcessSearch();
             }
@@ -278,9 +280,12 @@ class GenericDualCatalogWidget : CatalogWidgetExt
         foreach (var group in displayedGroups)
         {
             var (name, color) = GetGroupInfo(group);
+            var displayName = I18n.Asset(name);
             bool isSelected = selectedGroup!.Equals(group);
 
-            bool pressed = ShowGroupColors ? ColoredSelectable(name, color, isSelected) : ImGui.Selectable(name, isSelected);
+            bool pressed = ShowGroupColors
+                ? ColoredSelectable(displayName + "###" + name, color, isSelected)
+                : ImGui.Selectable(displayName + "###" + name, isSelected);
             if (pressed || displayedGroups.Count == 1)
             {
                 if (!selectedGroup.Equals(group))
@@ -303,6 +308,7 @@ class GenericDualCatalogWidget : CatalogWidgetExt
             if (!PassesSearchQuery(name))
                 continue;
             
+            var displayName = I18n.Asset(name);
             bool isSelected = item!.Equals(selectedItem);
             bool pressed;
 
@@ -312,7 +318,9 @@ class GenericDualCatalogWidget : CatalogWidgetExt
             }
             else
             {
-                pressed = ShowItemColors ? ColoredSelectable(name, color, isSelected) : ImGui.Selectable(name, isSelected);
+                pressed = ShowItemColors
+                    ? ColoredSelectable(displayName + "###" + name, color, isSelected)
+                    : ImGui.Selectable(displayName + "###" + name, isSelected);
             }
 
             if (pressed)

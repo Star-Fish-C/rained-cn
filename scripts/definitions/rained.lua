@@ -87,6 +87,11 @@ function rained.getApiVersion() end
 ---@return boolean isConsole
 function rained.isBatchMode() end
 
+---Translate display text using Rained's current language setting.
+---@param text string The source English text.
+---@return string translated The translated text, or the source text if no translation exists.
+function rained.translate(text) end
+
 ---Get the path of Rained's asset directory.
 ---@return string path
 function rained.getAssetDirectory() end

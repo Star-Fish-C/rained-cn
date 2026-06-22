@@ -8,7 +8,7 @@ namespace Rained.EditorGui.Editors;
 
 class EffectsEditor : IEditorMode
 {
-    public string Name { get => "Effects"; }
+    public string Name { get => I18n.T("Effects"); }
     public bool SupportsCellSelection => false;
 
     private readonly LevelWindow window;
@@ -125,13 +125,13 @@ class EffectsEditor : IEditorMode
         //KeyShortcuts.ImGuiMenuItem(KeyShortcut.IncreaseBrushSize, "Increase Brush Size");
         //KeyShortcuts.ImGuiMenuItem(KeyShortcut.DecreaseBrushSize, "Decrease Brush Size");
 
-        if (ImGui.MenuItem("Delete Effect", selectedEffect >= 0))
+        if (ImGui.MenuItem(I18n.T("Delete Effect"), selectedEffect >= 0))
             doDeleteCurrent = true;
 
-        if (ImGui.MenuItem("Move Effect Up", selectedEffect >= 0))
+        if (ImGui.MenuItem(I18n.T("Move Effect Up"), selectedEffect >= 0))
             doMoveCurrentUp = true;
 
-        if (ImGui.MenuItem("Move Effect Down", selectedEffect >= 0))
+        if (ImGui.MenuItem(I18n.T("Move Effect Down"), selectedEffect >= 0))
             doMoveCurrentDown = true;
 
         // TODO: clear effect menu item
@@ -148,13 +148,13 @@ class EffectsEditor : IEditorMode
         var fxDatabase = RainEd.Instance.EffectsDatabase;
         altInsertion = EditorWindow.IsKeyDown(ImGuiKey.ModShift);
 
-        if (ImGui.Begin("Add Effect", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Add Effect") + "###Add Effect", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             // work layer
             {
                 int workLayerV = window.WorkLayer + 1;
                 ImGui.SetNextItemWidth(ImGui.GetTextLineHeightWithSpacing() * 4f);
-                ImGui.InputInt("View Layer", ref workLayerV);
+                ImGui.InputInt(I18n.T("View Layer") + "###View Layer", ref workLayerV);
                 window.WorkLayer = Math.Clamp(workLayerV, 1, 3) - 1;
             }
 
@@ -170,7 +170,7 @@ class EffectsEditor : IEditorMode
                 ImGuiTabItemFlags flags;
 
                 flags = (forceSelect && selectedTab == 0) ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None;
-                if (ImGuiExt.BeginTabItem("Effects", flags))
+                if (ImGuiExt.BeginTabItem(I18n.T("Effects") + "###Effects", flags))
                 {
                     if (!forceSelect) selectedTab = 0;
 
@@ -179,7 +179,7 @@ class EffectsEditor : IEditorMode
                 }
 
                 flags = (forceSelect && selectedTab == 1) ? ImGuiTabItemFlags.SetSelected : ImGuiTabItemFlags.None;
-                if (ImGuiExt.BeginTabItem("Prefabs", flags))
+                if (ImGuiExt.BeginTabItem(I18n.T("Prefabs") + "###Prefabs", flags))
                 {
                     if (!forceSelect) selectedTab = 1;
 
@@ -194,14 +194,14 @@ class EffectsEditor : IEditorMode
 
         int deleteRequest = -1;
 
-        if (ImGui.Begin("Active Effects", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Active Effects") + "###Active Effects", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             if (ImGui.BeginListBox("##EffectStack", ImGui.GetContentRegionAvail()))
             {
                 var effectInsertPreviewIndex = altInsertion ? selectedEffect + 1 : selectedEffect; ;
                 if (level.Effects.Count == 0)
                 {
-                    ImGui.TextDisabled("(no effects)");
+                    ImGui.TextDisabled(I18n.T("(no effects)"));
                 }
                 else
                 {
@@ -211,7 +211,7 @@ class EffectsEditor : IEditorMode
 
                         ImGui.PushID(effect.GetHashCode());
 
-                        if (ImGui.Selectable(effect.Data.name, selectedEffect == i))
+                        if (ImGui.Selectable(I18n.Asset(effect.Data.name) + "###" + effect.Data.name, selectedEffect == i))
                             selectedEffect = i;
 
                         // drag to reorder items
@@ -263,7 +263,7 @@ class EffectsEditor : IEditorMode
             changeRecorder.PushListChange();
         }
 
-        if (ImGui.Begin("Effect Options", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Effect Options") + "###Effect Options", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             // effect properties
             if (selectedEffect >= 0)
@@ -272,11 +272,11 @@ class EffectsEditor : IEditorMode
 
                 // on delete action, only delete effect after UI has been processed
                 bool doDelete = false;
-                if (ImGui.Button("Delete"))
+                if (ImGui.Button(I18n.T("Delete")))
                     doDelete = true;
 
                 ImGui.SameLine();
-                if ((ImGui.Button("Move Up") || doMoveCurrentUp) && selectedEffect > 0)
+                if ((ImGui.Button(I18n.T("Move Up")) || doMoveCurrentUp) && selectedEffect > 0)
                 {
                     doMoveCurrentUp = false;
 
@@ -289,7 +289,7 @@ class EffectsEditor : IEditorMode
                 }
 
                 ImGui.SameLine();
-                if ((ImGui.Button("Move Down") || doMoveCurrentDown) && selectedEffect < level.Effects.Count - 1)
+                if ((ImGui.Button(I18n.T("Move Down")) || doMoveCurrentDown) && selectedEffect < level.Effects.Count - 1)
                 {
                     doMoveCurrentDown = false;
 
@@ -308,7 +308,7 @@ class EffectsEditor : IEditorMode
                     ImGui.NewLine();
 
                     ImGui.SetNextItemWidth(sliderRight - ImGui.GetCursorPosX());
-                    ImGui.SliderFloat("Brush Strength", ref userBrushStrength, BrushStrengthMin, BrushStrengthMax, "%.1fx", ImGuiSliderFlags.AlwaysClamp);
+                    ImGui.SliderFloat(I18n.T("Brush Strength") + "###Brush Strength", ref userBrushStrength, BrushStrengthMin, BrushStrengthMax, "%.1fx", ImGuiSliderFlags.AlwaysClamp);
 
                     // middle- or right-click to reset brush strength
                     if (ImGui.IsItemClicked(ImGuiMouseButton.Middle) || ImGui.IsItemClicked(ImGuiMouseButton.Right))
@@ -318,7 +318,7 @@ class EffectsEditor : IEditorMode
                 ImGui.Separator();
 
                 if (effect.Data.deprecated)
-                    ImGui.TextDisabled("This effect is deprecated!");
+                    ImGui.TextDisabled(I18n.T("This effect is deprecated!"));
 
                 ImGui.PushItemWidth(ImGui.GetTextLineHeight() * 8.0f);
 
@@ -328,12 +328,12 @@ class EffectsEditor : IEditorMode
                 // layers property
                 if (effect.Data.useLayers)
                 {
-                    if (ImGui.BeginCombo("Layers", layerModeNames[(int)effect.Layer]))
+                    if (ImGui.BeginCombo(I18n.T("Layers") + "###Layers", I18n.Asset(layerModeNames[(int)effect.Layer])))
                     {
                         foreach (int i in effect.Data.availableLayers.Select(v => (int)v))
                         {
                             bool isSelected = i == (int)effect.Layer;
-                            if (ImGui.Selectable(layerModeNames[i], isSelected))
+                            if (ImGui.Selectable(I18n.Asset(layerModeNames[i]) + "###" + layerModeNames[i], isSelected))
                             {
                                 effect.Layer = (Effect.LayerMode)i;
                                 hadChanged = true;
@@ -362,7 +362,7 @@ class EffectsEditor : IEditorMode
                 // plant color property
                 if (effect.Data.usePlantColors)
                 {
-                    if (ImGuiExt.ButtonSwitch("Color", plantColorNames, ref effect.PlantColor, ButtonGroupOptions.ShowID))
+                    if (ImGuiExt.ButtonSwitch(I18n.T("Color") + "###Color", plantColorNames, ref effect.PlantColor, ButtonGroupOptions.ShowID))
                     {
                         hadChanged = true;
                     }
@@ -371,7 +371,7 @@ class EffectsEditor : IEditorMode
                 // affect colors and gradients
                 if (effect.Data.useDecalAffect)
                 {
-                    if (ImGui.Checkbox("Affect Gradients and Decals", ref effect.AffectGradientsAndDecals))
+                    if (ImGui.Checkbox(I18n.T("Affect Gradients and Decals"), ref effect.AffectGradientsAndDecals))
                         hadChanged = true;
                 }
 
@@ -386,19 +386,19 @@ class EffectsEditor : IEditorMode
                     {
                         if (strConfig.IsColorOption)
                         {
-                            if (ImGuiExt.ButtonSwitch(strConfig.Name, plantColorNames, ref configValue, ButtonGroupOptions.ShowID))
+                            if (ImGuiExt.ButtonSwitch(I18n.Asset(strConfig.Name) + "###" + strConfig.Name, plantColorNames, ref configValue, ButtonGroupOptions.ShowID))
                             {
                                 hadChanged = true;
                             }
                         }
                         else
                         {
-                            if (ImGui.BeginCombo(strConfig.Name, strConfig.Options[configValue]))
+                            if (ImGui.BeginCombo(I18n.Asset(strConfig.Name) + "###" + strConfig.Name, I18n.Asset(strConfig.Options[configValue])))
                             {
                                 for (int i = 0; i < strConfig.Options.Length; i++)
                                 {
                                     bool isSelected = i == configValue;
-                                    if (ImGui.Selectable(strConfig.Options[i], isSelected))
+                                    if (ImGui.Selectable(I18n.Asset(strConfig.Options[i]) + "###" + strConfig.Options[i], isSelected))
                                     {
                                         configValue = i;
                                         hadChanged = true;
@@ -416,7 +416,7 @@ class EffectsEditor : IEditorMode
                     // int config
                     else if (configInfo is CustomEffectInteger intConfig)
                     {
-                        ImGui.SliderInt(intConfig.Name, ref configValue, intConfig.MinInclusive, intConfig.MaxInclusive);
+                        ImGui.SliderInt(I18n.Asset(intConfig.Name) + "###" + intConfig.Name, ref configValue, intConfig.MinInclusive, intConfig.MaxInclusive);
                         if (ImGui.IsItemDeactivatedAfterEdit())
                             hadChanged = true;
                     }
@@ -424,12 +424,12 @@ class EffectsEditor : IEditorMode
 
                 if (effect.Data.optionalInBounds)
                 {
-                    if (ImGui.Checkbox("Require In-Bounds", ref effect.RequireInBounds))
+                    if (ImGui.Checkbox(I18n.T("Require In-Bounds"), ref effect.RequireInBounds))
                         hadChanged = true;
                 }
 
                 // seed
-                ImGui.SliderInt("Seed", ref effect.Seed, 0, 500);
+                ImGui.SliderInt(I18n.T("Seed") + "###Seed", ref effect.Seed, 0, 500);
                 if (ImGui.IsItemDeactivatedAfterEdit())
                     hadChanged = true;
 
@@ -451,7 +451,7 @@ class EffectsEditor : IEditorMode
             }
             else
             {
-                ImGui.TextDisabled("No effect selected");
+                ImGui.TextDisabled(I18n.T("No effect selected"));
             }
         }
         ImGui.End();
@@ -745,10 +745,10 @@ class EffectsEditor : IEditorMode
         public Action<EffectInit?>? AddEffect;
 
         protected override string GetGroupName(int group) =>
-            database.Groups[group].name;
+            I18n.Asset(database.Groups[group].name);
 
         protected override string GetItemName(int group, int item) =>
-            database.Groups[group].effects[item].name;
+            I18n.Asset(database.Groups[group].effects[item].name);
 
         protected override IEnumerable<int> GetGroupList()
         {
@@ -772,9 +772,10 @@ class EffectsEditor : IEditorMode
                 ImGui.PushID(group);
 
                 var name = database.Groups[group].name;
+                var displayName = I18n.Asset(name);
                 bool isSelected = selectedGroup == group;
 
-                bool pressed = ImGui.Selectable(name, isSelected);
+                bool pressed = ImGui.Selectable(displayName + "###" + name, isSelected);
                 if (pressed || displayedGroups.Count == 1)
                 {
                     if (!selectedGroup.Equals(group))
@@ -802,7 +803,7 @@ class EffectsEditor : IEditorMode
                 ImGui.PushID(imId++);
                 
                 bool isSelected = item!.Equals(selectedItem);
-                if (ImGui.Selectable(item.name, isSelected))
+                if (ImGui.Selectable(I18n.Asset(item.name) + "###" + item.name, isSelected))
                 {
                     AddEffect?.Invoke(item);
                 }

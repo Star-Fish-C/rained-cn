@@ -325,11 +325,11 @@ class GeometryEditor : IEditorMode
         Vector4 textColor = ImGui.GetStyle().Colors[(int) ImGuiCol.Text];
         var level = RainEd.Instance.Level;
 
-        if (ImGui.Begin("Build", ImGuiWindowFlags.NoFocusOnAppearing))
+        if (ImGui.Begin(I18n.T("Build") + "###Build", ImGuiWindowFlags.NoFocusOnAppearing))
         {
             // view mode
             {
-                ImGui.Text("View Mode");
+                ImGui.Text(I18n.T("View Mode"));
                 ImGui.SetNextItemWidth(-0.0001f);
                 if (ImGui.BeginCombo("##ViewMode", viewModeNames[(int)layerViewMode]))
                 {
@@ -349,7 +349,7 @@ class GeometryEditor : IEditorMode
             }
 
             // draw toolbar
-            ImGui.Text(ToolNames[selectedTool]);
+            ImGui.Text(I18n.T(ToolNames[selectedTool]));
             ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0, 0));
             ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, new Vector2(2, 2));
             ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 0);
@@ -392,7 +392,7 @@ class GeometryEditor : IEditorMode
 
                 if (ImGui.IsItemHovered())
                 {
-                    ImGui.SetTooltip(toolName);
+                    ImGui.SetTooltip(I18n.T(toolName));
                 }
 
                 ImGui.PopID();
@@ -424,11 +424,11 @@ class GeometryEditor : IEditorMode
             ImGui.PushItemWidth(ImGui.GetContentRegionAvail().X);
 
             // layers
-            ImGui.Text("Layers");
+            ImGui.Text(I18n.T("Layers"));
             ImGuiExt.ButtonFlags("##Layers", ["1", "2", "3"], layerMask, ButtonGroupOptions.Vertical);
 
             // show mirror toggles
-            ImGui.Text("Mirror");
+            ImGui.Text(I18n.T("Mirror"));
             {
                 var _mirrorFlags = (int) mirrorFlags;
                 if (ImGuiExt.ButtonFlags("##Mirror", ["X", "Y"], ref _mirrorFlags))

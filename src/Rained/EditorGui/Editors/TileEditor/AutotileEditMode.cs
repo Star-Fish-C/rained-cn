@@ -123,7 +123,7 @@ class AutotileEditMode : TileEditorMode
 
         // create autotile button
         ImGui.BeginGroup();
-        if (ImGui.Button("Create Autotile", new Vector2(boxWidth, 0f)))
+        if (ImGui.Button(I18n.T("Create Autotile"), new Vector2(boxWidth, 0f)))
         {
             RainEd.Instance.Autotiles.OpenCreatePopup();
             ImGui.OpenPopup("Create Autotile");
@@ -141,7 +141,7 @@ class AutotileEditMode : TileEditorMode
                 ImGui.PushID(i);
                 var group = catalog.GetAutotilesInCategory(i);
 
-                if (group.Count > 0 && ImGui.TreeNode(autotileGroups[i]))
+                if (group.Count > 0 && ImGui.TreeNode(I18n.T(autotileGroups[i]) + "###" + autotileGroups[i]))
                 {
                     foreach (var autotile in group)
                     {
@@ -171,18 +171,18 @@ class AutotileEditMode : TileEditorMode
                 ImGui.SeparatorText(autotile.Name);
                 if (autotile.Type == Autotiles.AutotileType.Path)
                 {
-                    ImGui.Text("Path Autotile");
+                    ImGui.Text(I18n.T("Path Autotile"));
                 }
                 else if (autotile.Type == Autotiles.AutotileType.Rect)
                 {
-                    ImGui.Text("Rectangle Autotile");
+                    ImGui.Text(I18n.T("Rectangle Autotile"));
                 }
 
                 ImGui.Separator();
 
                 if (!autotile.IsReady)
                 {
-                    ImGui.TextWrapped("There was a problem loading this autotile.");
+                    ImGui.TextWrapped(I18n.T("There was a problem loading this autotile."));
                 }
                 else
                 {
@@ -191,7 +191,7 @@ class AutotileEditMode : TileEditorMode
             }
             else
             {
-                ImGui.TextDisabled("(no autotile selected)");
+                ImGui.TextDisabled(I18n.T("(no autotile selected)"));
             }
         ImGui.EndGroup();
     }

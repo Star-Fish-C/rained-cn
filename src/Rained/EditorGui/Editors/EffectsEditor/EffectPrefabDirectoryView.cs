@@ -146,12 +146,12 @@ class EffectPrefabDirectoryView : DirectoryTreeView
             // show effect stack
             var level = RainEd.Instance.Level;
 
-            ImGui.Text("Select effects to add");
+            ImGui.Text(I18n.T("Select effects to add"));
             if (ImGui.BeginListBox("##sources", new Vector2(-0.00001f, ImGui.GetFrameHeight() * 12.0f)))
             {
                 if (level.Effects.Count == 0)
                 {
-                    ImGui.TextDisabled("(no effects)");
+                    ImGui.TextDisabled(I18n.T("(no effects)"));
                 }
                 else
                 {
@@ -161,7 +161,7 @@ class EffectPrefabDirectoryView : DirectoryTreeView
                         var effect = level.Effects[i];
 
                         bool isSelected = selectedEffects.Contains(i);
-                        if (ImGui.Selectable(effect.Data.name, isSelected))
+                        if (ImGui.Selectable(I18n.Asset(effect.Data.name) + "###" + effect.Data.name, isSelected))
                         {
                             if (isSelected)
                                 selectedEffects.Remove(i);

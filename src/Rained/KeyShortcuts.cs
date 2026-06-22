@@ -328,7 +328,7 @@ static class KeyShortcuts
         var shortcutData = keyShortcuts[id];
         var shortcutStr = shortcutData.Key == ImGuiKey.None ? null : shortcutData.ShortcutString;
 
-        if (ImGui.MenuItem(name, shortcutStr, selected, enabled))
+        if (ImGui.MenuItem(I18n.T(name), shortcutStr, selected, enabled))
             shortcutData.IsActivated = true;
     }
 
@@ -336,7 +336,7 @@ static class KeyShortcuts
         => keyShortcuts[id].ShortcutString;
     
     public static string GetName(KeyShortcut id)
-        => keyShortcuts[id].Name;
+        => I18n.T(keyShortcuts[id].Name);
 
     public static void Update()
     {

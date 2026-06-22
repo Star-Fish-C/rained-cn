@@ -7,6 +7,7 @@ namespace Rained;
 static class Fonts
 {
     private static string[] availableFontPaths = [];
+    private static readonly Dictionary<string, string> fontFilePaths = [];
     private static ImFontPtr[] loadedFonts = [];
     private static ImFontPtr[] loadedBigFonts = [];
 
@@ -28,12 +29,31 @@ static class Fonts
     public static void UpdateAvailableFonts()
     {
         List<string> fontFiles = [];
+
+        void AddFont(string displayName, string filePath)
+        {
+            if (!File.Exists(filePath) || fontFilePaths.ContainsKey(displayName))
+                return;
+
+            fontFilePaths[displayName] = filePath;
+            fontFiles.Add(displayName);
+        }
+
+        fontFilePaths.Clear();
         
         foreach (var file in Directory.EnumerateFiles(FontDirectory))
         {
             var ext = Path.GetExtension(file);
-            if (ext != ".ttf") continue;
-            fontFiles.Add(Path.GetFileNameWithoutExtension(file));
+            if (ext != ".ttf" && ext != ".otf" && ext != ".ttc") continue;
+            AddFont(Path.GetFileNameWithoutExtension(file), file);
+        }
+
+        if (OperatingSystem.IsWindows())
+        {
+            var fontsDir = Environment.GetFolderPath(Environment.SpecialFolder.Fonts);
+            AddFont("Microsoft YaHei", Path.Combine(fontsDir, "msyh.ttc"));
+            AddFont("SimHei", Path.Combine(fontsDir, "simhei.ttf"));
+            AddFont("SimSun", Path.Combine(fontsDir, "simsun.ttc"));
         }
         
         availableFontPaths = [..fontFiles];
@@ -55,7 +75,7 @@ static class Fonts
             var builderPtr = new ImFontGlyphRangesBuilderPtr(glyphRangeBuilder);
 
             builderPtr.AddRanges(io.Fonts.GetGlyphRangesCyrillic());
-            builderPtr.AddRanges(io.Fonts.GetGlyphRangesChineseSimplifiedCommon());
+            builderPtr.AddRanges(io.Fonts.GetGlyphRangesChineseFull());
             builderPtr.AddRanges(io.Fonts.GetGlyphRangesJapanese());
 
             builderPtr.BuildRanges(out ranges);
@@ -67,7 +87,7 @@ static class Fonts
 
         foreach (var file in availableFontPaths)
         {
-            var fullFilePath = Path.Combine(FontDirectory, file + ".ttf");
+            var fullFilePath = fontFilePaths[file];
             var font = io.Fonts.AddFontFromFileTTF(fullFilePath, fontSize * Boot.WindowScale, null, ranges.Data);
             loadedFontList.Add(font);
 
