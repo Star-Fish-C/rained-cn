@@ -72,6 +72,18 @@ static class I18n
     public static string Combo(params string[] items)
         => string.Join('\0', items.Select(T)) + '\0';
 
+    public static IEnumerable<string> GlyphSourceTexts()
+    {
+        foreach (var (_, name) in Languages)
+            yield return name;
+
+        foreach (var (_, target) in AssetWordTranslations)
+            yield return target;
+
+        foreach (var (_, target) in ZhCn)
+            yield return target;
+    }
+
     private static string TranslateAssetWords(string text)
     {
         if (string.IsNullOrWhiteSpace(text))
