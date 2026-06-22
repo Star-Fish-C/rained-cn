@@ -7,6 +7,8 @@
 
 Rained CN is a Simplified Chinese localization fork of [pkhead/rained](https://github.com/pkhead/rained), another Rain World level editor.
 
+在文件 - 偏好设置 - 界面 - 语言中可以选择中文、英文、中英对照。
+
 本仓库是 [Rained](https://github.com/pkhead/rained) 的简体中文汉化版本。除了原本新增的简体中文界面外，还额外添加了 `中文 / English` 的中英对照语言选项，方便在熟悉原英文术语的同时阅读中文界面。
 
 ## 汉化内容
