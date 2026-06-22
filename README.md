@@ -1,12 +1,31 @@
-# Rained
+# Rained CN
 <p align="center">
     <img src="rained-logo.png" />
     <br />
-    <a href="https://github.com/pkhead/rained/releases">Downloads</a> | <a href="https://pkhead.github.io/rained/en/">Manual</a>
+    <a href="https://github.com/Star-Fish-C/rained-cn">CN Fork</a> | <a href="https://github.com/pkhead/rained">Original Project</a> | <a href="https://pkhead.github.io/rained/en/">Manual</a>
 </p>
 
+Rained CN is a Simplified Chinese localization fork of [pkhead/rained](https://github.com/pkhead/rained), another Rain World level editor.
 
-Another Rain World level editor. Read [this document](dist/README.md), which is bundled with every release package, for more information on how to use this software.
+本仓库是 [Rained](https://github.com/pkhead/rained) 的简体中文汉化版本。除了原本新增的简体中文界面外，还额外添加了 `中文 / English` 的中英对照语言选项，方便在熟悉原英文术语的同时阅读中文界面。
+
+## 汉化内容
+- 新增 `简体中文` 语言选项
+- 新增 `中文 / English` 中英对照语言选项
+- 汉化主菜单、偏好设置、编辑器窗口、脚本界面等 UI 文本
+- 汉化图块、材质、自动图块、效果、道具等选择器中的分类和素材名称
+- 对部分雨世界专有名词、区域名和素材名加入固定译名
+
+## 使用说明
+在 `Preferences -> Language` 中选择：
+
+- `简体中文`
+- `中文 / English`
+
+如果部分新增素材或模组素材仍显示英文，通常是该名称还没有对应译名；可以继续补充到 `src/Rained/I18n.cs` 中。
+
+## 原项目说明
+Rained is another Rain World level editor. Read [this document](dist/README.md), which is bundled with every release package, for more information on how to use this software.
 
 Please note that the "main" branch is ahead of the latest release, but is in sync with Nightly. If you want to access the repository
 at the time of a certain release, use the Git tags system.
@@ -37,8 +56,8 @@ Prerequisities:
 
 Clone with Git:
 ```bash
-git clone --recursive https://github.com/pkhead/rained
-cd rained
+git clone --recursive https://github.com/Star-Fish-C/rained-cn
+cd rained-cn
 ```
 
 ### Building Drizzle
