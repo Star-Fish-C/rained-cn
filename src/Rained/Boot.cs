@@ -472,7 +472,11 @@ namespace Rained
                     var appSetup = new AppSetup();
                     if (!appSetup.Start(out assetDataPath))
                     {
+                        siMgr?.Dispose();
+                        siMgr = null;
+                        ImGuiController?.Dispose();
                         Raylib.CloseWindow();
+                        Log.Close();
                         return;
                     }
                 }

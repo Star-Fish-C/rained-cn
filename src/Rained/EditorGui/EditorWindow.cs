@@ -217,10 +217,7 @@ static class EditorWindow
                 ImGui.Separator();
                 if (ImGui.MenuItem(I18n.T("Quit"), "Alt+F4"))
                 {
-                    PromptUnsavedChanges((bool ok) =>
-                    {
-                        if (ok) RainEd.Instance.Running = false;
-                    });
+                    RainEd.Instance.RequestClose();
                 }
 
                 ImGui.EndMenu();

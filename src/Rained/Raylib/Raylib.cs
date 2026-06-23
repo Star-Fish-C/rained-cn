@@ -253,6 +253,11 @@ static class Raylib
         return windowShouldClose;
     }
 
+    public static void ClearWindowShouldClose()
+    {
+        windowShouldClose = false;
+    }
+
     /// <summary>
     /// Check if window has been initialized successfully
     /// </summary>

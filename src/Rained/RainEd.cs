@@ -957,6 +957,7 @@ sealed class RainEd
 
     private readonly Mutex _tcsMutex = new();
     private readonly List<TaskCompletionSource> _tasksToRunOnNextFrame = [];
+    private bool closeWindowRequested;
 
     /// <summary>
     /// Run an action on the next frame. <br /><br />
@@ -981,18 +982,25 @@ sealed class RainEd
         return tcs.Task;
     }
 
-    private async void AsyncCloseWindowRequest()
+    public async void RequestClose()
     {
+        if (closeWindowRequested) return;
+        closeWindowRequested = true;
+
         if (await AssetManagerWindow.AppClose() && await EditorWindow.CloseAllTabs())
         {
             Running = false; 
+            return;
         }
+
+        Raylib.ClearWindowShouldClose();
+        closeWindowRequested = false;
     }
     
     public void Draw(float dt)
     {
         if (Raylib.WindowShouldClose())
-            AsyncCloseWindowRequest();
+            RequestClose();
         
         AssetGraphics.Maintenance();
         AssetGraphics.CleanUpTextures();
