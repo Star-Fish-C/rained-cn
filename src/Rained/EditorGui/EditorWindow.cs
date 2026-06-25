@@ -114,6 +114,7 @@ static class EditorWindow
 
     private static bool promptUnsavedChanges;
     private static bool promptUnsavedChangesCancelable;
+    private const string UnsavedChangesPopupId = "UnsavedChanges";
     private static readonly List<TaskCompletionSource<bool>> _tcsUnsavedChanges = [];
 
     public static bool PromptUnsavedChanges(LevelTab tab, Action<bool> callback, bool canCancel = true)
@@ -157,6 +158,7 @@ static class EditorWindow
         {
             promptUnsavedChanges = true;
             _tcsUnsavedChanges.Add(tcs);
+            RainEd.Instance.NeedScreenRefresh();
             return tcs.Task;
         }
         else
@@ -904,14 +906,17 @@ static class EditorWindow
         if (promptUnsavedChanges)
         {
             promptUnsavedChanges = false;
-            ImGui.OpenPopup("UnsavedChanges");
+            ImGui.OpenPopup(UnsavedChangesPopupId);
 
             // center popup 
             ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
         }
 
+        if (_tcsUnsavedChanges.Count > 0)
+            RainEd.Instance.NeedScreenRefresh();
+
         bool unused = true;
-        if (ImGui.BeginPopupModal(I18n.T("Unsaved Changes") + "###UnsavedChanges", ref unused, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGui.BeginPopupModal(I18n.T("Unsaved Changes") + "###" + UnsavedChangesPopupId, ref unused, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
             if (promptUnsavedChangesCancelable)
             {
@@ -927,6 +932,7 @@ static class EditorWindow
             if (ImGui.Button(I18n.T("Yes"), StandardPopupButtons.ButtonSize) || ImGui.IsKeyPressed(ImGuiKey.Enter) || ImGui.IsKeyPressed(ImGuiKey.Space))
             {
                 ImGui.CloseCurrentPopup();
+                RainEd.Instance.NeedScreenRefresh();
 
                 // unsaved change callback is run in SaveLevel
                 if (string.IsNullOrEmpty(RainEd.Instance.CurrentFilePath))
@@ -942,6 +948,7 @@ static class EditorWindow
             if (ImGui.Button(I18n.T("No"), StandardPopupButtons.ButtonSize) || (!promptUnsavedChangesCancelable && ImGui.IsKeyPressed(ImGuiKey.Escape)))
             {
                 ImGui.CloseCurrentPopup();
+                RainEd.Instance.NeedScreenRefresh();
 
                 if (promptUnsavedChangesCancelable)
                 {
@@ -963,6 +970,7 @@ static class EditorWindow
                 if (ImGui.Button(I18n.T("Cancel"), StandardPopupButtons.ButtonSize) || ImGui.IsKeyPressed(ImGuiKey.Escape))
                 {
                     ImGui.CloseCurrentPopup();
+                    RainEd.Instance.NeedScreenRefresh();
 
                     foreach (var t in _tcsUnsavedChanges.ToArray())
                     {
