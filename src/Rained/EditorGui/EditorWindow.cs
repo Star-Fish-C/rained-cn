@@ -114,8 +114,10 @@ static class EditorWindow
 
     private static bool promptUnsavedChanges;
     private static bool promptUnsavedChangesCancelable;
-    private const string UnsavedChangesPopupId = "UnsavedChanges";
+    private const string UnsavedChangesPopupId = "Unsaved Changes";
     private static readonly List<TaskCompletionSource<bool>> _tcsUnsavedChanges = [];
+
+    private static string UnsavedChangesPopupName => I18n.T("Unsaved Changes") + "###" + UnsavedChangesPopupId;
 
     public static bool PromptUnsavedChanges(LevelTab tab, Action<bool> callback, bool canCancel = true)
     {
@@ -906,7 +908,7 @@ static class EditorWindow
         if (promptUnsavedChanges)
         {
             promptUnsavedChanges = false;
-            ImGui.OpenPopup(UnsavedChangesPopupId);
+            ImGui.OpenPopup(UnsavedChangesPopupName);
 
             // center popup 
             ImGuiExt.CenterNextWindow(ImGuiCond.Appearing);
@@ -916,7 +918,7 @@ static class EditorWindow
             RainEd.Instance.NeedScreenRefresh();
 
         bool unused = true;
-        if (ImGui.BeginPopupModal(I18n.T("Unsaved Changes") + "###" + UnsavedChangesPopupId, ref unused, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
+        if (ImGui.BeginPopupModal(UnsavedChangesPopupName, ref unused, ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoSavedSettings))
         {
             if (promptUnsavedChangesCancelable)
             {
