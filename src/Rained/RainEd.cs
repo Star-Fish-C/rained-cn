@@ -890,11 +890,30 @@ sealed class RainEd
 
     public bool CloseTab(LevelTab tab)
     {
-        LuaScripting.Modules.RainedModule.DocumentClosingCallback(_tabs.IndexOf(tab));
+        var tabIndex = _tabs.IndexOf(tab);
+        if (tabIndex < 0) return false;
 
+        LuaScripting.Modules.RainedModule.DocumentClosingCallback(tabIndex);
+
+        var wasCurrentTab = tab == _currentTab;
         levelView?.LevelClosed(tab.Level);
         tab.Dispose();
-        return _tabs.Remove(tab);
+        _tabs.RemoveAt(tabIndex);
+
+        if (wasCurrentTab)
+        {
+            if (_tabs.Count == 0)
+            {
+                _currentTab = null;
+                UpdateTitle();
+            }
+            else
+            {
+                CurrentTab = _tabs[Math.Min(tabIndex, _tabs.Count - 1)];
+            }
+        }
+
+        return true;
     }
 
     public void UpdateTitle()
